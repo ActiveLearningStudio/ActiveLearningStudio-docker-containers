@@ -1,4 +1,4 @@
-#Curriki React
+# Curriki React
 
 ## Installation
 
@@ -88,7 +88,7 @@ MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 
 
 
-##URLS
+## URLS
 
 - http://localhost:8082 - React
 - http://localhost:8082/api - Server
