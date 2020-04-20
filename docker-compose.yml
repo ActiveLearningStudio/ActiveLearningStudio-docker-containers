@@ -1,0 +1,127 @@
+version: "3"
+networks:
+  laravel:
+services:
+
+  nginx:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - 8082:80
+    restart: always
+    depends_on:
+      - php
+      - mysql
+      - client
+    networks:
+      - laravel
+
+  mysql:
+    image: mysql:5.7.22
+    container_name: mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - ${MYSQL_LOCAL_PORT}:3306
+    volumes:
+      - mysqldata:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - laravel
+  
+
+  php:
+    build:
+      dockerfile: Dockerfile.dev
+      context: .
+    container_name: php
+    ports:
+      - ${PHP_LOCAL_PORT}:9000
+    volumes:
+      - ./ActiveLearningStudio-laravel-api:/var/www/html
+    restart: always
+    networks:
+      - laravel
+      
+  composer:
+    image: composer:latest
+    container_name: composer
+    volumes:
+      - ./ActiveLearningStudio-laravel-api:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - php
+    networks:
+      - laravel
+      
+  artisan:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: artisan
+    volumes:
+      - ./ActiveLearningStudio-laravel-api:/var/www/html
+    depends_on:
+      - mysql
+    working_dir: /var/www/html
+    entrypoint: ['/var/www/html/artisan']
+    networks:
+      - laravel
+      
+  phpmyadmin:
+    depends_on:
+      - mysql
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - 8088:80
+    volumes:
+      - ./php.ini:/usr/local/etc/php/php.ini
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: secret
+      PMA_ABSOLUTE_URI: http://localhost:8082/phpmyadmin/
+    networks:
+      - laravel
+
+  mongodb:
+    container_name: db
+    image: mongo:3.4
+    restart: always
+    working_dir: /var/app/current
+    command: mongod
+    ports:
+      - "28018:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=pastime
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootPass
+    volumes:
+      - mongodbdata:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./ActiveLearningStudio-react-client
+    container_name: client
+    ports:
+      - ${CLIENT_LOCAL_PORT}:3000
+    volumes:
+      - /var/app/current/node_modules
+      - ./ActiveLearningStudio-react-client:/var/app/current
+    restart: always
+    networks:
+      - laravel
+volumes: #provide volume
+  mongodbdata:
+      external: true
+  mysqldata:
+      external: true
