@@ -3,7 +3,12 @@
 ## Installation
 
 - Clone the repository
+
+> git clone --recursive https://github.com/ActiveLearningStudio/ActiveLearningStudio-docker-containers
+
 - cd /path/to/root
+
+> cd ActiveLearningStudio-docker-containers
 
 
 ## Env file sample
@@ -29,8 +34,7 @@ For persistent databases
 > docker volume create mysqldata
 
 ## Server Configurations
-- Run command `docker-compose run --rm composer install` to install server dependencies
-- create .env file inside /server. Sample is given here. Change variables accroding to the .env of root directorys
+- create .env file inside /ActiveLearningStudio-laravel-api. Sample is given here. Change variables accroding to the .env of root directorys
 
 ```
 APP_NAME=Laravel
@@ -80,13 +84,16 @@ PUSHER_APP_CLUSTER=mt1
 MIX_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
 MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 ```
-
+- Run command `docker-compose run --rm composer install` to install server dependencies
 - Run command `docker-compose run --rm artisan key:generate` to install server dependencies
 - Run command `docker-compose run --rm artisan storage:link` to create storage link
 - Run command `docker-compose run --rm artisan config:cache` to install server dependencies
-- Give read/write permission to server storage directory: sudo chmod 777 -R server/storage
+- Give read/write permission to server storage directory: chmod 777 -R ActiveLearningStudio-laravel-api/storage
 
 
+## Running and building application
+
+> docker-compose up --build
 
 ## URLS
 
