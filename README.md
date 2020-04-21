@@ -33,24 +33,34 @@ For persistent databases
 
 > docker volume create mysqldata
 
+## SQL setup
+
+- Create file ActiveLearningStudio-laravel-api/tmp/database/setup.sql with the following content. (Change database name according to your /.env file)
+
+```
+CREATE DATABASE IF NOT EXISTS currikiserver;
+
+USE currikiserver;
+```
+
 ## Server Configurations
 - create .env file inside /ActiveLearningStudio-laravel-api. Sample is given here. Change variables accroding to the .env of root directorys
 
 ```
 APP_NAME=Laravel
 APP_ENV=local
-APP_KEY=
+APP_KEY=base64:TKNJ+iLSCm4zjLBBDDdDE2ZKF/qwzcTU+NC5+kyBaRc=
 APP_DEBUG=true
-APP_URL=http://localhost:8082
+APP_URL=http://localhost:8082/api
 
 LOG_CHANNEL=stack
 
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_PORT=3306
-DB_DATABASE=homestead
-DB_USERNAME=homestead
-DB_PASSWORD=secret
+DB_DATABASE=currikiserver2
+DB_USERNAME=currikireact
+DB_PASSWORD=secret123
 
 BROADCAST_DRIVER=log
 CACHE_DRIVER=file
@@ -83,6 +93,7 @@ PUSHER_APP_CLUSTER=mt1
 
 MIX_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
 MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+
 ```
 - Run command `docker-compose run --rm composer install` to install server dependencies
 - Run command `docker-compose run --rm artisan key:generate` to install server dependencies

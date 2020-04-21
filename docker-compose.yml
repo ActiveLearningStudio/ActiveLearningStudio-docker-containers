@@ -26,6 +26,7 @@ services:
       - ${MYSQL_LOCAL_PORT}:3306
     volumes:
       - mysqldata:/var/lib/mysql
+      - ./tmp/database/install_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -33,6 +34,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
+    # command: mysqld --init-file="/tmp/database/install_db.sql"
     networks:
       - laravel
   
@@ -122,6 +124,6 @@ services:
       - laravel
 volumes: #provide volume
   mongodbdata:
-      external: true
+      external: false
   mysqldata:
-      external: true
+      external: false
