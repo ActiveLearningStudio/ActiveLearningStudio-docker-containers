@@ -35,7 +35,7 @@ For persistent databases
 
 ## SQL setup
 
-- Create file ActiveLearningStudio-laravel-api/tmp/database/setup.sql with the following content. (Change database name according to your /.env file)
+- Create file ActiveLearningStudio-docker-containers/tmp/database/setup.sql with the following content. (Change database name according to your /.env file)
 
 ```
 CREATE DATABASE IF NOT EXISTS currikiserver;
@@ -49,7 +49,7 @@ USE currikiserver;
 ```
 APP_NAME=Laravel
 APP_ENV=local
-APP_KEY=base64:TKNJ+iLSCm4zjLBBDDdDE2ZKF/qwzcTU+NC5+kyBaRc=
+APP_KEY=
 APP_DEBUG=true
 APP_URL=http://localhost:8082/api
 
