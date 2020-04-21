@@ -58,7 +58,7 @@ LOG_CHANNEL=stack
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_PORT=3306
-DB_DATABASE=currikiserver2
+DB_DATABASE=currikiserver
 DB_USERNAME=currikireact
 DB_PASSWORD=secret123
 
