@@ -26,9 +26,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `failed_jobs`
 --
 
-CREATE DATABASE IF NOT EXISTS currikiserver2;
 
-USE currikiserver2;
 
 CREATE TABLE `failed_jobs` (
   `id` bigint(20) UNSIGNED NOT NULL,
