@@ -4,7 +4,7 @@
 
 - Clone the repository
 
-> git clone --recursive https://github.com/ActiveLearningStudio/ActiveLearningStudio-docker-containers
+> git clone --recursive https://github.com/ActiveLearningStudio/ActiveLearningStudio-docker-containers.git
 
 - cd /path/to/root
 
