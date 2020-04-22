@@ -49,9 +49,12 @@ services:
       - ${PHP_LOCAL_PORT}:9000
     volumes:
       - ./ActiveLearningStudio-laravel-api:/var/www/html
+    depends_on:
+      - mongodb
     restart: always
     networks:
       - laravel
+
       
   composer:
     image: composer:latest
@@ -96,20 +99,22 @@ services:
       - laravel
 
   mongodb:
-    container_name: db
-    image: mongo:3.4
+    container_name: mongodb
+    image: mongo
     restart: always
     working_dir: /var/app/current
     command: mongod
     ports:
       - "28018:27017"
-    environment:
-      - MONGO_INITDB_DATABASE=pastime
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=rootPass
+    # environment:
+    #   - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+    #   - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+    #   - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     volumes:
       - mongodbdata:/data/db
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      # - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - laravel
   client:
     build:
       dockerfile: Dockerfile.dev
