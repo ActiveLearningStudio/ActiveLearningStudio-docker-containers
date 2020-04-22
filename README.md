@@ -95,7 +95,7 @@ MIX_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
 MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 
 ```
-- Run command `docker-compose run --rm composer install` to install server dependencies
+- Run command `docker-compose run --rm composer install --ignore-platform-reqs` to install server dependencies
 - Run command `docker-compose run --rm artisan key:generate` to install server dependencies
 - Run command `docker-compose run --rm artisan storage:link` to create storage link
 - Run command `docker-compose run --rm artisan config:cache` to install server dependencies
