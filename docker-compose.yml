@@ -11,9 +11,10 @@ services:
       - 8082:80
     restart: always
     depends_on:
-      - php
+      - laravel-api
       - mysql
       - client
+      - lti-provider
     networks:
       - laravel
 
@@ -40,15 +41,30 @@ services:
       - laravel
   
 
-  php:
+  laravel-api:
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: ./ActiveLearningStudio-laravel-api/Dockerfile.dev
       context: .
-    container_name: php
+    container_name: laravel-api
     ports:
-      - ${PHP_LOCAL_PORT}:9000
+      - ${LARAVEL_API_LOCAL_PORT}:9000
     volumes:
       - ./ActiveLearningStudio-laravel-api:/var/www/html
+    depends_on:
+      - mongodb
+    restart: always
+    networks:
+      - laravel
+
+  lti-provider:
+    build:
+      dockerfile: ./ActiveLearningStudio-lti-provider/Dockerfile.dev
+      context: .
+    container_name: lti-provider
+    ports:
+      - ${LTI_PROVIDER_LOCAL_PORT}:9500
+    volumes:
+      - ./ActiveLearningStudio-lti-provider:/var/www/html
     depends_on:
       - mongodb
     restart: always
@@ -63,7 +79,7 @@ services:
       - ./ActiveLearningStudio-laravel-api:/var/www/html
     working_dir: /var/www/html
     depends_on:
-      - php
+      - laravel-api
     networks:
       - laravel
       
@@ -112,6 +128,7 @@ services:
     #   - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     volumes:
       - mongodbdata:/data/db
+      - ./mongoscripts:/var/app/current/mongoscripts
       # - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     networks:
       - laravel
