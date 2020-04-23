@@ -4,6 +4,6 @@
 [submodule "ActiveLearningStudio-laravel-api"]
 	path = ActiveLearningStudio-laravel-api
 	url = https://github.com/ActiveLearningStudio/ActiveLearningStudio-laravel-api.git
-[submodule "test-laravel"]
-	path = test-laravel
+[submodule "ActiveLearningStudio-lti-provider"]
+	path = ActiveLearningStudio-lti-provider
 	url = https://github.com/ActiveLearningStudio/ActiveLearningStudio-lti-provider.git
