@@ -109,4 +109,5 @@ MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 
 - http://localhost:8082 - React
 - http://localhost:8082/api - Server
+- http://localhost:8082/lti/provider - PhpMyAdmin
 - http://localhost:8082/phpmyadmin/ - PhpMyAdmin
