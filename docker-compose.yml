@@ -150,3 +150,7 @@ volumes: #provide volume
       external: true
   mysqldata:
       external: true
+
+networks:
+  laravel:
+    driver: bridge
