@@ -7,3 +7,6 @@
 [submodule "ActiveLearningStudio-lti-provider"]
 	path = ActiveLearningStudio-lti-provider
 	url = https://github.com/ActiveLearningStudio/ActiveLearningStudio-lti-provider.git
+[submodule "ActiveLearningStudio-h5p"]
+	path = ActiveLearningStudio-h5p
+	url = https://github.com/ActiveLearningStudio/ActiveLearningStudio-h5p

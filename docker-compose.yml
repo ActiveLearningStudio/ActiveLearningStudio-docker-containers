@@ -57,6 +57,24 @@ services:
     networks:
       - currikidev-laravel
 
+
+  
+  currikidev-h5p-api:
+    build:
+      dockerfile: ./ActiveLearningStudio-h5p/Dockerfile.dev
+      context: .
+    container_name: currikidev-h5p-api
+    ports:
+      - ${LARAVEL_H5P_API_PORT}:7000
+    volumes:
+      - ./ActiveLearningStudio-h5p:/var/www/html
+    depends_on:
+      - currikidev-mysql
+    restart: always
+    networks:
+      - currikidev-laravel
+    
+
   currikidev-lti-provider:
     build:
       dockerfile: ./ActiveLearningStudio-lti-provider/Dockerfile.dev
@@ -102,7 +120,7 @@ services:
     depends_on:
       - currikidev-mysql
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
+    container_name: currikidev-phpmyadmin
     restart: always
     ports:
       - 8088:80
