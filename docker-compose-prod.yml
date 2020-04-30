@@ -59,7 +59,7 @@ services:
       - currikiprod-laravel
 
 
-      currikiprod-h5p-api:
+  currikiprod-h5p-api:
     build:
     dockerfile: ./ActiveLearningStudio-h5p/Dockerfile.dev
       context: .
