@@ -61,7 +61,7 @@ services:
 
   currikiprod-h5p-api:
     build:
-    dockerfile: ./ActiveLearningStudio-h5p/Dockerfile.dev
+      dockerfile: ./ActiveLearningStudio-h5p/Dockerfile.dev
       context: .
     container_name: currikiprod-h5p-api
     ports:
