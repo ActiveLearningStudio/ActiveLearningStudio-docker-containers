@@ -51,6 +51,7 @@ services:
       - ${LARAVEL_API_LOCAL_PORT}:9000
     volumes:
       - ./ActiveLearningStudio-laravel-api:/var/www/html
+      - ./php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - currikidev-mongodb
     restart: always
@@ -68,6 +69,7 @@ services:
       - ${LARAVEL_H5P_API_PORT}:7000
     volumes:
       - ./ActiveLearningStudio-h5p:/var/www/html
+      - ./php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - currikidev-mysql
     restart: always
@@ -84,6 +86,7 @@ services:
       - ${LTI_PROVIDER_LOCAL_PORT}:9500
     volumes:
       - ./ActiveLearningStudio-lti-provider:/var/www/html
+      - ./php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - currikidev-mongodb
     restart: always
