@@ -128,7 +128,7 @@ services:
     volumes:
       - ./php.ini:/usr/local/etc/php/php.ini
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: currikiprod-mysql
       MYSQL_ROOT_PASSWORD: secret
       PMA_ABSOLUTE_URI: http://create.curriki.org/phpmyadmin/
     networks:
