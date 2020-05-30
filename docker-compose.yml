@@ -18,14 +18,13 @@ services:
       - currikidev-lti-provider
     networks:
       - currikidev-laravel
+      - internet
 
   currikidev-mysql:
     image: mysql:5.7.22
     container_name: currikidev-mysql
     restart: unless-stopped
     tty: true
-    ports:
-      - ${MYSQL_LOCAL_PORT}:3306
     volumes:
       - currikidev-mysqldata:/var/lib/mysql
       - ./tmp/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
@@ -47,8 +46,6 @@ services:
       dockerfile: ./ActiveLearningStudio-laravel-api/Dockerfile.dev
       context: .
     container_name: currikidev-laravel-api
-    ports:
-      - ${LARAVEL_API_LOCAL_PORT}:9000
     volumes:
       - ./ActiveLearningStudio-laravel-api:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
@@ -65,8 +62,6 @@ services:
       dockerfile: ./ActiveLearningStudio-h5p/Dockerfile.dev
       context: .
     container_name: currikidev-h5p-api
-    ports:
-      - ${LARAVEL_H5P_API_PORT}:7000
     volumes:
       - ./ActiveLearningStudio-h5p:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
@@ -82,8 +77,6 @@ services:
       dockerfile: ./ActiveLearningStudio-lti-provider/Dockerfile.dev
       context: .
     container_name: currikidev-lti-provider
-    ports:
-      - ${LTI_PROVIDER_LOCAL_PORT}:9500
     volumes:
       - ./ActiveLearningStudio-lti-provider:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
@@ -93,40 +86,12 @@ services:
     networks:
       - currikidev-laravel
 
-      
-  # composer:
-  #   image: composer:latest
-  #   container_name: currikidev-composer
-  #   volumes:
-  #     - ./ActiveLearningStudio-laravel-api:/var/www/html
-  #   working_dir: /var/www/html
-  #   depends_on:
-  #     - currikidev-laravel-api
-  #   networks:
-  #     - currikidev-laravel
-      
-  # artisan:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: currikidev-artisan
-  #   volumes:
-  #     - ./ActiveLearningStudio-laravel-api:/var/www/html
-  #   depends_on:
-  #     - currikidev-mysql
-  #   working_dir: /var/www/html
-  #   entrypoint: ['/var/www/html/artisan']
-  #   networks:
-  #     - currikidev-laravel
-      
   currikidev-phpmyadmin:
     depends_on:
       - currikidev-mysql
     image: phpmyadmin/phpmyadmin
     container_name: currikidev-phpmyadmin
     restart: always
-    ports:
-      - 8088:80
     volumes:
       - ./php.ini:/usr/local/etc/php/php.ini
     environment:
@@ -142,8 +107,6 @@ services:
     restart: always
     working_dir: /var/app/current
     command: mongod
-    ports:
-      - "28018:27017"
     # environment:
     #   - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
     #   - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
@@ -159,8 +122,6 @@ services:
       dockerfile: Dockerfile.dev
       context: ./ActiveLearningStudio-react-client
     container_name: currikidev-client
-    ports:
-      - ${CLIENT_LOCAL_PORT}:3000
     volumes:
       - /var/app/current/node_modules
       - ./ActiveLearningStudio-react-client:/var/app/current
@@ -176,3 +137,6 @@ volumes: #provide volume
 networks:
   currikidev-laravel:
     driver: bridge
+  internet:
+    external:
+      name: internet

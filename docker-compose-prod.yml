@@ -18,14 +18,13 @@ services:
       - currikiprod-lti-provider
     networks:
       - currikiprod-laravel
+      - internet
 
   currikiprod-mysql:
     image: mysql:5.7.22
     container_name: currikiprod-mysql
     restart: unless-stopped
     tty: true
-    ports:
-      - ${MYSQL_LOCAL_PORT}:3306
     volumes:
       - currikiprod-mysqldata:/var/lib/mysql
       - ./tmp/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
@@ -47,8 +46,6 @@ services:
       dockerfile: ./ActiveLearningStudio-laravel-api/Dockerfile.dev
       context: .
     container_name: currikiprod-laravel-api
-    ports:
-      - ${LARAVEL_API_LOCAL_PORT}:9000
     volumes:
       - ./ActiveLearningStudio-laravel-api:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
@@ -64,8 +61,6 @@ services:
       dockerfile: ./ActiveLearningStudio-h5p/Dockerfile.dev
       context: .
     container_name: currikiprod-h5p-api
-    ports:
-      - ${LARAVEL_H5P_API_PORT}:7000
     volumes:
       - ./ActiveLearningStudio-h5p:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
@@ -80,8 +75,6 @@ services:
       dockerfile: ./ActiveLearningStudio-lti-provider/Dockerfile.dev
       context: .
     container_name: currikiprod-lti-provider
-    ports:
-      - ${LTI_PROVIDER_LOCAL_PORT}:9500
     volumes:
       - ./ActiveLearningStudio-lti-provider:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
@@ -123,8 +116,6 @@ services:
     image: phpmyadmin/phpmyadmin
     container_name: currikiprod-phpmyadmin
     restart: always
-    ports:
-      - 8088:80
     volumes:
       - ./php.ini:/usr/local/etc/php/php.ini
     environment:
@@ -140,8 +131,6 @@ services:
     restart: always
     working_dir: /var/app/current
     command: mongod
-    ports:
-      - "28018:27017"
     # environment:
     #   - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
     #   - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
@@ -158,8 +147,6 @@ services:
       dockerfile: Dockerfile.prod
       context: ./ActiveLearningStudio-react-client
     container_name: currikiprod-client
-    ports:
-      - ${CLIENT_LOCAL_PORT}:8080
     volumes:
       - /app/node_modules
       - ./ActiveLearningStudio-react-client:/app
@@ -176,3 +163,6 @@ volumes: #provide volume
 networks:
   currikiprod-laravel:
     driver: bridge
+  internet:
+    external:
+      name: internet
