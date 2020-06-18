@@ -3,11 +3,11 @@ networks:
   laravel:
 services:
 
-  # currikiprod-nginx:
+  # nginx:
   #   build:
   #     dockerfile: Dockerfile.prod
   #     context: ./nginx
-  #   container_name: currikiprod-nginx
+  #   container_name: nginx
   #   ports:
   #     - ${FRONT_MAIN_PORT}:80
   #     - 443:443
@@ -25,7 +25,7 @@ services:
   #     - currikiprod-laravel
   #     - internet
 
-  currikiprod-nginx:
+  nginx:
     image: nginx:1.15-alpine
     restart: unless-stopped
     volumes:
