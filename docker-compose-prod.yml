@@ -3,14 +3,38 @@ networks:
   laravel:
 services:
 
+  # currikiprod-nginx:
+  #   build:
+  #     dockerfile: Dockerfile.prod
+  #     context: ./nginx
+  #   container_name: currikiprod-nginx
+  #   ports:
+  #     - ${FRONT_MAIN_PORT}:80
+  #     - 443:443
+  #   restart: always
+  #   volumes:
+  #     - ./data/nginx:/etc/nginx/conf.d
+  #     - ./data/certbot/conf:/etc/letsencrypt
+  #     - ./data/certbot/www:/var/www/certbot
+  #   depends_on:
+  #     - currikiprod-laravel-api
+  #     - currikiprod-mysql
+  #     - currikiprod-client
+  #     - currikiprod-lti-provider
+  #   networks:
+  #     - currikiprod-laravel
+  #     - internet
+
   currikiprod-nginx:
-    build:
-      dockerfile: Dockerfile.prod
-      context: ./nginx
-    container_name: currikiprod-nginx
+    image: nginx:1.15-alpine
+    restart: unless-stopped
+    volumes:
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     ports:
-      - ${FRONT_MAIN_PORT}:80
-    restart: always
+      - "80:80"
+      - "443:443"
     depends_on:
       - currikiprod-laravel-api
       - currikiprod-mysql
@@ -19,6 +43,14 @@ services:
     networks:
       - currikiprod-laravel
       - internet
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
   currikiprod-mysql:
     image: mysql:5.7.22
