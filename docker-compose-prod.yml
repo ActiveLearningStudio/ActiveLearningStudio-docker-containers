@@ -35,6 +35,11 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    depends_on:
+      - currikiprod-laravel-api
+      - currikiprod-h5p-api
+      - currikiprod-lti-provider
+      - currikiprod-client
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     networks:
       - currikiprod-laravel
@@ -80,6 +85,7 @@ services:
       - ./php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - currikiprod-mongodb
+      - currikiprod-mysql
     restart: always
     networks:
       - currikiprod-laravel
