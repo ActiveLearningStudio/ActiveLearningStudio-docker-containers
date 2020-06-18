@@ -35,11 +35,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    depends_on:
-      - currikiprod-laravel-api
-      - currikiprod-mysql
-      - currikiprod-client
-      - currikiprod-lti-provider
     networks:
       - currikiprod-laravel
       - internet
