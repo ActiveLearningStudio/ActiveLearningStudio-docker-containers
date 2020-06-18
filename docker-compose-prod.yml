@@ -27,7 +27,6 @@ services:
 
   nginx:
     image: nginx:1.15-alpine
-    container_name: nginx
     restart: unless-stopped
     volumes:
       - ./data/nginx:/etc/nginx/conf.d
