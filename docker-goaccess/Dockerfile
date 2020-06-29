@@ -15,13 +15,13 @@ RUN wget -q -O - https://github.com/allinurl/goaccess/archive/v1.3.tar.gz | tar 
     rm -rf /tmp/goaccess/* /goaccess && \
     apk del $build_deps
 
-
+# Get necessary runtime dependencies and set up configuration
+RUN apk add --update --no-cache ${runtime_deps}
 
 COPY /root /
 
-# RUN chmod +x /usr/local/bin/goaccess.sh && \
-#     chmod -R 777 /var/tmp/nginx
-RUN chmod +x /usr/local/bin/goaccess.sh
+RUN chmod +x /usr/local/bin/goaccess.sh && \
+    chmod -R 777 /var/tmp/nginx
 
 EXPOSE 7889
 VOLUME [ "/config", "/opt/log" ]
