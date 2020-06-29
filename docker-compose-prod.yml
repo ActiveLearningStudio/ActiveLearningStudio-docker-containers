@@ -44,6 +44,23 @@ services:
     networks:
       - currikiprod-laravel
       - internet
+
+  currikiprod-goaccess:
+    build:
+      dockerfile: Dockerfile
+      context: ./docker-goaccess
+    ports:
+      - 7889:7889
+    container_name: currikiprod-goaccess
+    restart: always
+    volumes:
+      - '/var/www/html/ActiveLearningStudio-docker-containers/data/nginx/log:/opt/log'
+      - '/root/config:/config'
+    image: gregyankovoy/goaccess
+    networks:
+      - currikiprod-laravel
+
+
   certbot:
     image: certbot/certbot
     restart: unless-stopped
