@@ -28,6 +28,7 @@ services:
   nginx:
     image: nginx:1.15-alpine
     restart: unless-stopped
+    container_name: currikiprod-nginx
     volumes:
       - ./data/nginx:/etc/nginx/conf.d
       - ./data/certbot/conf:/etc/letsencrypt
@@ -52,7 +53,7 @@ services:
     ports:
       - 7889:7889
     container_name: currikiprod-goaccess
-    # restart: always
+    restart: always
     volumes:
       - './data/nginx/log:/opt/log'
       - '/root/config:/config'
