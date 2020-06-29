@@ -55,7 +55,7 @@ services:
     container_name: currikiprod-goaccess
     restart: always
     volumes:
-      - '/var/www/html/ActiveLearningStudio-docker-containers/data/nginx/log:/opt/log'
+      - './data/nginx/log:/opt/log'
       - '/root/config:/config'
     image: gregyankovoy/goaccess
     networks:
