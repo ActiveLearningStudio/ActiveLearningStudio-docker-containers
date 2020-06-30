@@ -47,20 +47,20 @@ services:
       - currikiprod-laravel
       - internet
 
-  currikiprod-goaccess:
-    build:
-      dockerfile: Dockerfile
-      context: ./docker-goaccess
-    ports:
-      - 7889:7889
-    container_name: currikiprod-goaccess
-    restart: always
-    volumes:
-      - './data/nginx/log:/opt/log'
-      - './docker-goaccess/root/config:/config'
-    image: gregyankovoy/goaccess
-    networks:
-      - currikiprod-laravel
+  # currikiprod-goaccess:
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: ./docker-goaccess
+  #   ports:
+  #     - 7889:7889
+  #   container_name: currikiprod-goaccess
+  #   restart: always
+  #   volumes:
+  #     - './data/nginx/log:/opt/log'
+  #     - './docker-goaccess/root/config:/config'
+  #   image: gregyankovoy/goaccess
+  #   networks:
+  #     - currikiprod-laravel
 
 
   certbot:
@@ -185,6 +185,8 @@ services:
     restart: always
     working_dir: /var/app/current
     command: mongod
+    ports:
+      - "28018:27017"
     # environment:
     #   - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
     #   - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
