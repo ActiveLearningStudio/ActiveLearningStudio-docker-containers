@@ -175,7 +175,7 @@ services:
     environment:
       PMA_HOST: currikiprod-mysql
       MYSQL_ROOT_PASSWORD: secret
-      PMA_ABSOLUTE_URI: http://create.curriki.org/phpmyadmin/
+      PMA_ABSOLUTE_URI: http://studio.curriki.org/phpmyadmin/
     networks:
       - currikiprod-laravel
 
@@ -187,10 +187,10 @@ services:
     command: mongod
     ports:
       - "28018:27017"
-    # environment:
-    #   - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
-    #   - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-    #   - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     volumes:
       - currikiprod-mongodbdata:/data/db
       - ./mongoscripts:/var/app/current/mongoscripts
