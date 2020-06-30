@@ -54,10 +54,10 @@ services:
     ports:
       - 7889:7889
     container_name: currikiprod-goaccess
-    # restart: always
+    restart: always
     volumes:
       - './data/nginx/log:/opt/log'
-      - '/root/config:/config'
+      - './docker-goaccess/root/config:/config'
     image: gregyankovoy/goaccess
     networks:
       - currikiprod-laravel
