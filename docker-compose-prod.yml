@@ -31,7 +31,7 @@ services:
       - ./goaccess/html:/usr/share/nginx/html
     ports:
       - 7891:80
-      - 443:443
+      - 7892:443
     networks:
       - currikiprod-laravel
 
