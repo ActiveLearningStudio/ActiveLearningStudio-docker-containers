@@ -16,7 +16,7 @@ services:
     ports:
     - 7890:7890
     networks:
-      - currikidev-laravel
+      - currikiprod-laravel
 
   goaccess-nginx:
     image: nginx:1.15-alpine
@@ -28,7 +28,7 @@ services:
     ports:
       - 7891:80
     networks:
-      - currikidev-laravel
+      - currikiprod-laravel
   # nginx:
   #   build:
   #     dockerfile: Dockerfile.prod
