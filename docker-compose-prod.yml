@@ -3,6 +3,32 @@ networks:
   laravel:
 services:
 
+  goaccess:
+    image: allinurl/goaccess
+    restart: always
+    volumes:
+      - ./goaccess/config:/srv/config
+      - ./goaccess/data:/srv/data
+      - ./goaccess/html:/srv/report
+      - ./logs:/srv/logs
+    command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/logs/access.log"]
+
+    ports:
+    - 7890:7890
+    networks:
+      - currikidev-laravel
+
+  goaccess-nginx:
+    image: nginx:1.15-alpine
+    container_name: goaccess-nginx
+    depends_on: 
+      - goaccess
+    volumes:
+      - ./goaccess/html:/usr/share/nginx/html
+    ports:
+      - 7891:80
+    networks:
+      - currikidev-laravel
   # nginx:
   #   build:
   #     dockerfile: Dockerfile.prod
@@ -47,28 +73,7 @@ services:
       - currikiprod-laravel
       - internet
 
-  goaccess:
-    image: allinurl/goaccess
-    restart: always
-    volumes:
-      - ./goaccess.conf:/srv/config/goaccess.conf
-      - ./goaccess/data:/srv/data
-      - ./goaccess/html:/srv/report
-      - ./data/log:/srv/log
-    command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/log/access.log"]
-    ports:
-      - 7890:7890
-    networks:
-      - currikiprod-laravel
-
-  goaccess-nginx:
-    image: nginx:1.15-alpine
-    volumes:
-      - ./goaccess/html:/usr/share/nginx/html
-    ports:
-      - 7891:80
-    networks:
-      - currikiprod-laravel
+  
 
   # currikiprod-goaccess:
   #   build:

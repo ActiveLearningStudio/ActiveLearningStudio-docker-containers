@@ -3,6 +3,33 @@ networks:
   laravel:
 services:
 
+  goaccess:
+    image: allinurl/goaccess
+    restart: always
+    volumes:
+      - ./goaccess/config:/srv/config
+      - ./goaccess/data:/srv/data
+      - ./goaccess/html:/srv/report
+      - ./logs:/srv/logs
+    command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/logs/access.log"]
+
+    ports:
+    - 7890:7890
+    networks:
+      - currikidev-laravel
+
+  goaccess-nginx:
+    image: nginx:1.15-alpine
+    container_name: goaccess-nginx
+    depends_on: 
+      - goaccess
+    volumes:
+      - ./goaccess/html:/usr/share/nginx/html
+    ports:
+      - 7891:80
+    networks:
+      - currikidev-laravel
+
   currikidev-nginx:
     build:
       dockerfile: Dockerfile.dev
@@ -21,20 +48,22 @@ services:
     networks:
       - currikidev-laravel
 
-  currikidev-goaccess:
-    build:
-      dockerfile: Dockerfile
-      context: ./docker-goaccess
-    ports:
-      - 7889:7889
-    container_name: currikidev-goaccess
-    restart: always
-    volumes:
-      - '/var/www/html/ActiveLearningStudio-docker-containers/data/nginx/log:/opt/log'
-      - '/root/config:/config'
-    image: gregyankovoy/goaccess
-    networks:
-      - currikidev-laravel
+  
+
+  # currikidev-goaccess:
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: ./docker-goaccess
+  #   ports:
+  #     - 7889:7889
+  #   container_name: currikidev-goaccess
+  #   restart: always
+  #   volumes:
+  #     - './data/nginx/log:/opt/log'
+  #     - './docker-goaccess/root/config:/config'
+  #   image: gregyankovoy/goaccess
+  #   networks:
+  #     - currikidev-laravel
 
 
  
