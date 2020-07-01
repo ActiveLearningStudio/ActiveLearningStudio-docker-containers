@@ -54,8 +54,8 @@ services:
       - ./goaccess/config:/srv/config
       - ./goaccess/data:/srv/data
       - ./goaccess/html:/srv/report
-      - ./data/logs:/srv/logs
-    command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/logs/access.log"]
+      - ./data/log:/srv/log
+    command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/log/access.log"]
     ports:
     - 7890:7890
 
