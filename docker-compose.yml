@@ -10,7 +10,7 @@ services:
       - ./goaccess/config:/srv/config
       - ./goaccess/data:/srv/data
       - ./goaccess/html:/srv/report
-      - ./logs:/srv/logs
+      - ./data/nginx/log:/srv/logs
     command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/logs/access.log"]
 
     ports:

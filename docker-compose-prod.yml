@@ -15,7 +15,7 @@ services:
     command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/logs/access.log"]
 
     ports:
-    - 7890:7890
+      - 7890:7890
     networks:
       - currikiprod-laravel
 
@@ -25,39 +25,22 @@ services:
     depends_on: 
       - currikiprod-goaccess
     volumes:
+      - ./data/nginx/goaccess-conf:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
       - ./goaccess/html:/usr/share/nginx/html
     ports:
       - 7891:80
+      - 443:443
     networks:
       - currikiprod-laravel
-  # nginx:
-  #   build:
-  #     dockerfile: Dockerfile.prod
-  #     context: ./nginx
-  #   container_name: nginx
-  #   ports:
-  #     - ${FRONT_MAIN_PORT}:80
-  #     - 443:443
-  #   restart: always
-  #   volumes:
-  #     - ./data/nginx:/etc/nginx/conf.d
-  #     - ./data/certbot/conf:/etc/letsencrypt
-  #     - ./data/certbot/www:/var/www/certbot
-  #   depends_on:
-  #     - currikiprod-laravel-api
-  #     - currikiprod-mysql
-  #     - currikiprod-client
-  #     - currikiprod-lti-provider
-  #   networks:
-  #     - currikiprod-laravel
-  #     - internet
 
   currikiprod-nginx:
     image: nginx:1.15-alpine
     restart: unless-stopped
     container_name: currikiprod-nginx
     volumes:
-      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/nginx/prod-conf:/etc/nginx/conf.d
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
       - ./data/nginx/log:/var/log/nginx
@@ -75,22 +58,6 @@ services:
       - internet
 
   
-
-  # currikiprod-goaccess:
-  #   build:
-  #     dockerfile: Dockerfile
-  #     context: ./docker-goaccess
-  #   ports:
-  #     - 7889:7889
-  #   container_name: currikiprod-goaccess
-  #   restart: always
-  #   volumes:
-  #     - './data/nginx/log:/opt/log'
-  #     - './docker-goaccess/root/config:/config'
-  #   image: gregyankovoy/goaccess
-  #   networks:
-  #     - currikiprod-laravel
-
 
   certbot:
     image: certbot/certbot
@@ -166,32 +133,6 @@ services:
     restart: always
     networks:
       - currikiprod-laravel
-
-      
-  # composer:
-  #   image: composer:latest
-  #   container_name: currikiprod-composer
-  #   volumes:
-  #     - ./ActiveLearningStudio-laravel-api:/var/www/html
-  #   working_dir: /var/www/html
-  #   depends_on:
-  #     - currikiprod-laravel-api
-  #   networks:
-  #     - currikiprod-laravel
-      
-  # artisan:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: currikiprod-artisan
-  #   volumes:
-  #     - ./ActiveLearningStudio-laravel-api:/var/www/html
-  #   depends_on:
-  #     - currikiprod-mysql
-  #   working_dir: /var/www/html
-  #   entrypoint: ['/var/www/html/artisan']
-  #   networks:
-  #     - currikiprod-laravel
       
   currikiprod-phpmyadmin:
     depends_on:
