@@ -3,8 +3,9 @@ networks:
   laravel:
 services:
 
-  goaccess:
+  currikiprod-goaccess:
     image: allinurl/goaccess
+    container_name: currikiprod-goaccess
     restart: always
     volumes:
       - ./goaccess/config:/srv/config
@@ -18,11 +19,11 @@ services:
     networks:
       - currikiprod-laravel
 
-  goaccess-nginx:
+  currikiprod-goaccess-nginx:
     image: nginx:1.15-alpine
-    container_name: goaccess-nginx
+    container_name: currikiprod-goaccess-nginx
     depends_on: 
-      - goaccess
+      - currikiprod-goaccess
     volumes:
       - ./goaccess/html:/usr/share/nginx/html
     ports:
@@ -51,7 +52,7 @@ services:
   #     - currikiprod-laravel
   #     - internet
 
-  nginx:
+  currikiprod-nginx:
     image: nginx:1.15-alpine
     restart: unless-stopped
     container_name: currikiprod-nginx
