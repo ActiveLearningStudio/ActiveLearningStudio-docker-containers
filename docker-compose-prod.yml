@@ -51,7 +51,7 @@ services:
     image: allinurl/goaccess
     restart: always
     volumes:
-      - ./goaccess/config:/srv/config
+      - ./goaccess.conf:/srv/config/goaccess.conf
       - ./goaccess/data:/srv/data
       - ./goaccess/html:/srv/report
       - ./data/log:/srv/log
