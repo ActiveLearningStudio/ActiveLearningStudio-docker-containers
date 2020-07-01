@@ -47,6 +47,25 @@ services:
       - currikiprod-laravel
       - internet
 
+    goaccess:
+      image: allinurl/goaccess
+      restart: always
+      volumes:
+        - ./goaccess/config:/srv/config
+        - ./goaccess/data:/srv/data
+        - ./goaccess/html:/srv/report
+        - ./data/logs:/srv/logs
+      command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/logs/access.log"]
+      ports:
+      - 7890:7890
+
+    goaccess-nginx:
+      image: nginx:1.15-alpine
+      volumes:
+      - ./goaccess/html:/usr/share/nginx/html
+      ports:
+      - 7891:80
+
   # currikiprod-goaccess:
   #   build:
   #     dockerfile: Dockerfile
