@@ -58,6 +58,8 @@ services:
     command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/log/access.log"]
     ports:
     - 7890:7890
+    networks:
+      - currikiprod-laravel
 
   goaccess-nginx:
     image: nginx:1.15-alpine
@@ -65,6 +67,8 @@ services:
     - ./goaccess/html:/usr/share/nginx/html
     ports:
     - 7891:80
+    networks:
+      - currikiprod-laravel
 
   # currikiprod-goaccess:
   #   build:
