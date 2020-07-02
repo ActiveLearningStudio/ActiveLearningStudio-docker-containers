@@ -1,65 +1,43 @@
-# Curriki React
+# docker-goaccess
+This is an Alpine linux container which builds GoAccess including GeoIP.  It reverse proxies the GoAccess HTML files and websockets through nginx, allowing GoAccess content to be viewed without any other setup.
 
-## Installation
-
-- Clone the repository
-
-> git clone --recursive https://github.com/ActiveLearningStudio/ActiveLearningStudio-docker-containers.git
-
-- cd /path/to/root
-
-> cd ActiveLearningStudio-docker-containers
-
-
-## Env file sample
-
-- Create .env file in the root of project
-- Add following content. Change variables according to your environement
-
+# Usage
+## Example docker run
 ```
-FRONT_MAIN_PORT=8082
+docker run --name goaccess -p 7889:7889 -v /path/to/host/nginx/logs:/opt/log -v /path/to/goaccess/storage:/config -d gregyankovoy/goaccess
 ```
 
-## Create volumes
-For persistent databases 
+## Volume Mounts
+- /config
+  - Used to store configuration and GoAccess generated files
+- /opt/log
+  - Map to nginx log directory
 
-> docker volume create mongodbdata
+## Variables
+- PUID 
+  - User Id of user to run nginx & GoAccess
+- PGID 
+  - User Group to run nginx & GoAccess
 
-> docker volume create mysqldata
+## Files
+- /config/goaccess.conf
+  - GoAccess config file (populated with default config unless modified)
+- /config/html
+  - GoAccess generated static HTML
 
-## Create network
-
-> docker network create internet
-
-## Run composer install inside Laravel containers
-> docker-compose run --rm currikidev-laravel-api composer install && docker-compose run --rm currikidev-lti-provider composer install && docker-compose run --rm currikidev-h5p-api composer install
-
-## Cached Configs inside laravel
-
-> docker-compose run --rm currikidev-laravel-api php artisan config:cache && docker-compose run --rm currikidev-lti-provider php artisan config:cache && docker-compose run --rm currikidev-h5p-api php artisan config:cache
-
-## SQL setup
-
-- Create file ActiveLearningStudio-docker-containers/tmp/database/setup.sql with the following content. (Change database name according to your /.env file)
-
+## Reverse Proxy
+### nginx
 ```
-CREATE DATABASE IF NOT EXISTS currikiserver;
+location ^~ /goaccess {
+    resolver 127.0.0.11 valid=30s;
+    set $upstream_goaccess goaccess;
+    proxy_pass http://$upstream_goaccess:7889/;
 
-USE currikiserver;
+    proxy_connect_timeout 1d;
+    proxy_send_timeout 1d;
+    proxy_read_timeout 1d;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+}
 ```
-
-## Server Configurations
-- create .env file inside /ActiveLearningStudio-laravel-api. Sample is given here. Change variables accroding to the .env of root directorys
-- Give read/write permission to server storage directory: chmod 777 -R ActiveLearningStudio-laravel-api/storage
-
-
-## Running and building application
-
-> docker-compose up --build
-
-## URLS
-
-- http://localhost:8082 - React
-- http://localhost:8082/api - Server
-- http://localhost:8082/lti/provider - PhpMyAdmin
-- http://localhost:8082/phpmyadmin/ - PhpMyAdmin
