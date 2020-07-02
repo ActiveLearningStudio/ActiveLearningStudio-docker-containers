@@ -3,8 +3,9 @@ networks:
   laravel:
 services:
 
-  goaccess:
+  currikidev-goaccess:
     image: allinurl/goaccess
+    container_name: currikidev-goaccess
     restart: always
     volumes:
       - ./goaccess/config:/srv/config
@@ -14,16 +15,19 @@ services:
     command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/logs/access.log"]
 
     ports:
-    - 7890:7890
+      - 7890:7890
     networks:
       - currikidev-laravel
 
-  goaccess-nginx:
+  currikidev-goaccess-nginx:
     image: nginx:1.15-alpine
-    container_name: goaccess-nginx
+    container_name: currikidev-goaccess-nginx
     depends_on: 
-      - goaccess
+      - currikidev-goaccess
     volumes:
+      - ./data/nginx/goaccess-conf:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
       - ./goaccess/html:/usr/share/nginx/html
     ports:
       - 7891:80
