@@ -98,10 +98,10 @@ services:
       - ./ActiveLearningStudio-API:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
     depends_on:
-      - currikidev-mongodb
+      - currikiprod-mongodb
     restart: always
     networks:
-      - currikidev-laravel
+      - currikiprod-laravel
 
   currikiprod-laravel-api:
     build:
