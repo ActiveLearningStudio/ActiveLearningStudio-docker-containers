@@ -10,3 +10,6 @@
 [submodule "ActiveLearningStudio-h5p"]
 	path = ActiveLearningStudio-h5p
 	url = https://github.com/ActiveLearningStudio/ActiveLearningStudio-h5p
+[submodule "ActiveLearningStudio-API"]
+	path = ActiveLearningStudio-API
+	url = https://github.com/ActiveLearningStudio/ActiveLearningStudio-API.git
