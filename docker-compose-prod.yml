@@ -89,6 +89,19 @@ services:
     networks:
       - currikiprod-laravel
   
+  currikiprod-auth-api:
+    build:
+      dockerfile: ./ActiveLearningStudio-API/Dockerfile.dev
+      context: .
+    container_name: currikiprod-auth-api
+    volumes:
+      - ./ActiveLearningStudio-API:/var/www/html
+      - ./php.ini:/usr/local/etc/php/php.ini
+    depends_on:
+      - currikidev-mongodb
+    restart: always
+    networks:
+      - currikidev-laravel
 
   currikiprod-laravel-api:
     build:

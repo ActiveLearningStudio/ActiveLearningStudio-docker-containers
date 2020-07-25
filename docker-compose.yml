@@ -51,25 +51,6 @@ services:
       - currikidev-lti-provider
     networks:
       - currikidev-laravel
-
-  
-
-  # currikidev-goaccess:
-  #   build:
-  #     dockerfile: Dockerfile
-  #     context: ./docker-goaccess
-  #   ports:
-  #     - 7889:7889
-  #   container_name: currikidev-goaccess
-  #   restart: always
-  #   volumes:
-  #     - './data/nginx/log:/opt/log'
-  #     - './docker-goaccess/root/config:/config'
-  #   image: gregyankovoy/goaccess
-  #   networks:
-  #     - currikidev-laravel
-
-
  
 
   currikidev-mysql:
@@ -83,6 +64,7 @@ services:
       - currikidev-mysqldata:/var/lib/mysql
       - ./tmp/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
       - ./tmp/database/install_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./mysqlscripts:/mysqlscripts
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -94,6 +76,24 @@ services:
     networks:
       - currikidev-laravel
   
+
+  
+  currikidev-auth-api:
+    build:
+      dockerfile: ./ActiveLearningStudio-API/Dockerfile.dev
+      context: .
+    container_name: currikidev-auth-api
+    ports:
+      - ${LARAVEL_AUTH_API_LOCAL_PORT}:8000
+    volumes:
+      - ./ActiveLearningStudio-API:/var/www/html
+      - ./php.ini:/usr/local/etc/php/php.ini
+    depends_on:
+      - currikidev-mongodb
+    restart: always
+    networks:
+      - currikidev-laravel
+    
 
   currikidev-laravel-api:
     build:
@@ -218,6 +218,7 @@ services:
       - /var/app/current/node_modules
       - ./ActiveLearningStudio-react-client:/var/app/current
     restart: always
+    stdin_open: true
     networks:
       - currikidev-laravel
 volumes: #provide volume
