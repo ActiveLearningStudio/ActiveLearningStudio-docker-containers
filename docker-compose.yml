@@ -184,8 +184,8 @@ services:
       - ./php.ini:/usr/local/etc/php/php.ini
     environment:
       PMA_HOST: currikidev-mysql
-      MYSQL_ROOT_PASSWORD: secret
-      PMA_ABSOLUTE_URI: http://localhost:8082/phpmyadmin/
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      PMA_ABSOLUTE_URI: ${PMA_ABSOLUTE_URI}
     networks:
       - currikidev-laravel
 

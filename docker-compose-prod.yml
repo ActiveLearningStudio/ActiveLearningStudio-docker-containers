@@ -77,6 +77,7 @@ services:
       - currikiprod-mysqldata:/var/lib/mysql
       - ./tmp/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
       - ./tmp/database/install_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./mysqlscripts:/mysqlscripts
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -156,8 +157,8 @@ services:
       - ./php.ini:/usr/local/etc/php/php.ini
     environment:
       PMA_HOST: currikiprod-mysql
-      MYSQL_ROOT_PASSWORD: secret
-      PMA_ABSOLUTE_URI: http://studio.curriki.org/phpmyadmin/
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      PMA_ABSOLUTE_URI: ${PMA_ABSOLUTE_URI}
     networks:
       - currikiprod-laravel
 
