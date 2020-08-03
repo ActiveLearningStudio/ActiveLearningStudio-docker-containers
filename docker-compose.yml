@@ -4,14 +4,14 @@ networks:
 services:
 
   currikidev-goaccess:
-    image: allinurl/goaccess
+    image: currikidev-goaccess:1.0.0
     container_name: currikidev-goaccess
     restart: always
-    volumes:
-      - ./goaccess/config:/srv/config
-      - ./goaccess/data:/srv/data
-      - ./goaccess/html:/srv/report
-      - ./data/nginx/log:/srv/logs
+    # volumes:
+    #   - ./goaccess/config:/srv/config
+    #   - ./goaccess/data:/srv/data
+    #   - ./goaccess/html:/srv/report
+    #   - ./data/nginx/log:/srv/logs
     command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/logs/access.log"]
 
     ports:
@@ -20,15 +20,15 @@ services:
       - currikidev-laravel
 
   currikidev-goaccess-nginx:
-    image: nginx:1.15-alpine
+    image: currikidev_goaccess_nginx:1.0.0
     container_name: currikidev-goaccess-nginx
     depends_on: 
       - currikidev-goaccess
-    volumes:
-      - ./data/nginx/goaccess-conf:/etc/nginx/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-      - ./goaccess/html:/usr/share/nginx/html
+    # volumes:
+    #   - ./data/nginx/goaccess-conf:/etc/nginx/conf.d
+    #   - ./data/certbot/conf:/etc/letsencrypt
+    #   - ./data/certbot/www:/var/www/certbot
+    #   - ./goaccess/html:/usr/share/nginx/html
     ports:
       - 7891:80
     networks:
@@ -51,7 +51,6 @@ services:
       - currikidev-lti-provider
     networks:
       - currikidev-laravel
- 
 
   currikidev-mysql:
     image: mysql:5.7.22
