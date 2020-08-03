@@ -1,0 +1,9 @@
+# Dockerfile to build goaccess container without using volumes.
+
+FROM allinurl/goaccess
+RUN mkdir -p /srv/config
+COPY goaccess/config /srv/config
+RUN mkdir -p /srv/data
+COPY goaccess/data* /srv/data
+COPY goaccess/html /srv/html
+COPY data/nginx/log /srv/logs
