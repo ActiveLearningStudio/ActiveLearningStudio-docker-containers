@@ -1,0 +1,9 @@
+logs/*
+mongoscripts/*
+data/*
+tmp/*
+ActiveLearningStudio-API
+ActiveLearningStudio-h5p
+ActiveLearningStudio-laravel-api
+ActiveLearningStudio-react-client
+.git

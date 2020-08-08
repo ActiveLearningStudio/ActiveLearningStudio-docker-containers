@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+    kompose.version: 1.21.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: currikidev-nginx
+  name: currikidev-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: currikidev-nginx
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+        kompose.version: 1.21.0 ()
+      creationTimestamp: null
+      labels:
+        io.kompose.network/currikidev-laravel: "true"
+        io.kompose.service: currikidev-nginx
+    spec:
+      containers:
+      - image: currikidev-nginx
+        imagePullPolicy: ""
+        name: currikidev-nginx
+        ports:
+        - containerPort: 80
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/log/nginx
+          name: currikidev-nginx-claim0
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: currikidev-nginx-claim0
+        persistentVolumeClaim:
+          claimName: currikidev-nginx-claim0
+status: {}

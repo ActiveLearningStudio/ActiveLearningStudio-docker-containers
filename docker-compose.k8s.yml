@@ -4,14 +4,14 @@ networks:
 services:
 
   currikidev-goaccess:
-    image: allinurl/goaccess
+    image: currikidev-goaccess:1.0.0
     container_name: currikidev-goaccess
     restart: always
-    volumes:
-      - ./goaccess/config:/srv/config
-      - ./goaccess/data:/srv/data
-      - ./goaccess/html:/srv/report
-      - ./data/nginx/log:/srv/logs
+    # volumes:
+    #   - ./goaccess/config:/srv/config
+    #   - ./goaccess/data:/srv/data
+    #   - ./goaccess/html:/srv/report
+    #   - ./data/nginx/log:/srv/logs
     command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/logs/access.log"]
 
     ports:
@@ -20,15 +20,15 @@ services:
       - currikidev-laravel
 
   currikidev-goaccess-nginx:
-    image: nginx:1.15-alpine
+    image: currikidev_goaccess_nginx:1.0.0
     container_name: currikidev-goaccess-nginx
     depends_on: 
       - currikidev-goaccess
-    volumes:
-      - ./data/nginx/goaccess-conf:/etc/nginx/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-      - ./goaccess/html:/usr/share/nginx/html
+    # volumes:
+    #   - ./data/nginx/goaccess-conf:/etc/nginx/conf.d
+    #   - ./data/certbot/conf:/etc/letsencrypt
+    #   - ./data/certbot/www:/var/www/certbot
+    #   - ./goaccess/html:/usr/share/nginx/html
     ports:
       - 7891:80
     networks:
@@ -51,7 +51,6 @@ services:
       - currikidev-lti-provider
     networks:
       - currikidev-laravel
- 
 
   currikidev-mysql:
     image: mysql:5.7.22
@@ -60,11 +59,11 @@ services:
     tty: true
     ports:
       - ${MYSQL_LOCAL_PORT}:3306
-    volumes:
-      - currikidev-mysqldata:/var/lib/mysql
-      - ./tmp/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
-      - ./tmp/database/install_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
-      - ./mysqlscripts:/mysqlscripts
+    # volumes:
+      # - currikidev-mysqldata:/var/lib/mysql
+      # - ./tmp/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
+      # - ./tmp/database/install_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      # - ./mysqlscripts:/mysqlscripts
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -85,9 +84,9 @@ services:
     container_name: currikidev-auth-api
     ports:
       - ${LARAVEL_AUTH_API_LOCAL_PORT}:8000
-    volumes:
-      - ./ActiveLearningStudio-API:/var/www/html
-      - ./php.ini:/usr/local/etc/php/php.ini
+    # volumes:
+    #   - ./ActiveLearningStudio-API:/var/www/html
+    #   - ./php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - currikidev-mongodb
     restart: always
@@ -102,9 +101,9 @@ services:
     container_name: currikidev-laravel-api
     ports:
       - ${LARAVEL_API_LOCAL_PORT}:9000
-    volumes:
-      - ./ActiveLearningStudio-laravel-api:/var/www/html
-      - ./php.ini:/usr/local/etc/php/php.ini
+    # volumes:
+    #   - ./ActiveLearningStudio-laravel-api:/var/www/html
+    #   - ./php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - currikidev-mongodb
     restart: always
@@ -120,9 +119,9 @@ services:
     container_name: currikidev-h5p-api
     ports:
       - ${LARAVEL_H5P_API_PORT}:7000
-    volumes:
-      - ./ActiveLearningStudio-h5p:/var/www/html
-      - ./php.ini:/usr/local/etc/php/php.ini
+    # volumes:
+    #   - ./ActiveLearningStudio-h5p:/var/www/html
+    #   - ./php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - currikidev-mysql
     restart: always
@@ -137,9 +136,9 @@ services:
     container_name: currikidev-lti-provider
     ports:
       - ${LTI_PROVIDER_LOCAL_PORT}:9500
-    volumes:
-      - ./ActiveLearningStudio-lti-provider:/var/www/html
-      - ./php.ini:/usr/local/etc/php/php.ini
+    # volumes:
+    #   - ./ActiveLearningStudio-lti-provider:/var/www/html
+    #   - ./php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - currikidev-mongodb
     restart: always
@@ -175,13 +174,13 @@ services:
   currikidev-phpmyadmin:
     depends_on:
       - currikidev-mysql
-    image: phpmyadmin/phpmyadmin
+    image: currikidev-phpmyadmin
     container_name: currikidev-phpmyadmin
     restart: always
     ports:
       - 8088:80
-    volumes:
-      - ./php.ini:/usr/local/etc/php/php.ini
+    # volumes:
+    #   - ./php.ini:/usr/local/etc/php/php.ini
     environment:
       PMA_HOST: currikidev-mysql
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -207,6 +206,7 @@ services:
       # - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     networks:
       - currikidev-laravel
+
   currikidev-client:
     build:
       dockerfile: Dockerfile.dev
@@ -214,13 +214,14 @@ services:
     container_name: currikidev-client
     ports:
       - ${CLIENT_LOCAL_PORT}:3000
-    volumes:
-      - /var/app/current/node_modules
-      - ./ActiveLearningStudio-react-client:/var/app/current
+    # volumes:
+    #   - /var/app/current/node_modules
+    #   - ./ActiveLearningStudio-react-client:/var/app/current
     restart: always
     stdin_open: true
     networks:
       - currikidev-laravel
+
 volumes: #provide volume
     currikidev-mongodbdata:
       external: true

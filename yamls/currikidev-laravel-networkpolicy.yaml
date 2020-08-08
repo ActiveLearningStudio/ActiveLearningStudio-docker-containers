@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  creationTimestamp: null
+  name: currikidev-laravel
+spec:
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          io.kompose.network/currikidev-laravel: "true"
+  podSelector:
+    matchLabels:
+      io.kompose.network/currikidev-laravel: "true"

@@ -1,0 +1,6 @@
+FROM node:8.9.3-alpine
+WORKDIR /var/app/current
+COPY ActiveLearningStudio-react-client/package*.json ./
+RUN npm install
+COPY ActiveLearningStudio-react-client/* ./
+CMD ["npm", "run", "start:dev"]

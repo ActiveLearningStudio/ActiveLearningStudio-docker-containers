@@ -1,0 +1,8 @@
+ActiveLearningStudio-*
+goaccess/*
+data/*
+logs/*
+mongoscripts/*
+mysqlscripts/*
+tmp/*
+.git

@@ -1,0 +1,5 @@
+ActiveLearningStudio-*
+logs/*
+mongoscripts/*
+data/*
+.git

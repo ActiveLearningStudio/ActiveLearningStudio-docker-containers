@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+    kompose.version: 1.21.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: currikidev-goaccess
+  name: currikidev-goaccess
+spec:
+  ports:
+  - name: "7890"
+    port: 7890
+    targetPort: 7890
+  selector:
+    io.kompose.service: currikidev-goaccess
+status:
+  loadBalancer: {}
