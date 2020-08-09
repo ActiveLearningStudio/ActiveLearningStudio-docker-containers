@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+    kompose.cmd: kompose convert -f docker-compose.k8s.yml -o yamls/
     kompose.version: 1.21.0 ()
   creationTimestamp: null
   labels:
@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+        kompose.cmd: kompose convert -f docker-compose.k8s.yml -o yamls/
         kompose.version: 1.21.0 ()
       creationTimestamp: null
       labels:
@@ -28,8 +28,8 @@ spec:
       containers:
       - args:
         - mongod
-        image: mongo
-        imagePullPolicy: ""
+        image: currikidev/mongodb:1.0.0
+        imagePullPolicy: IfNotPresent
         name: currikidev-mongodb
         ports:
         - containerPort: 27017

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+    kompose.cmd: kompose convert -f docker-compose.k8s.yml -o yamls/
     kompose.version: 1.21.0 ()
   creationTimestamp: null
   labels:
@@ -13,12 +13,11 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: currikidev-lti-provider
-  strategy:
-    type: Recreate
+  strategy: {}
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+        kompose.cmd: kompose convert -f docker-compose.k8s.yml -o yamls/
         kompose.version: 1.21.0 ()
       creationTimestamp: null
       labels:
@@ -26,24 +25,13 @@ spec:
         io.kompose.service: currikidev-lti-provider
     spec:
       containers:
-      - image: currikidev-lti-provider
-        imagePullPolicy: ""
+      - image: currikidev/lti-provider:1.0.0
+        imagePullPolicy: IfNotPresent
         name: currikidev-lti-provider
         ports:
         - containerPort: 9500
         resources: {}
-        volumeMounts:
-        - mountPath: /var/www/html
-          name: currikidev-lti-provider-claim0
-        - mountPath: /usr/local/etc/php/php.ini
-          name: currikidev-lti-provider-claim1
       restartPolicy: Always
       serviceAccountName: ""
-      volumes:
-      - name: currikidev-lti-provider-claim0
-        persistentVolumeClaim:
-          claimName: currikidev-lti-provider-claim0
-      - name: currikidev-lti-provider-claim1
-        persistentVolumeClaim:
-          claimName: currikidev-lti-provider-claim1
+      volumes: null
 status: {}

@@ -4,14 +4,9 @@ networks:
 services:
 
   currikidev-goaccess:
-    image: currikidev-goaccess:1.0.0
+    image: currikidev/goaccess:1.0.0
     container_name: currikidev-goaccess
     restart: always
-    # volumes:
-    #   - ./goaccess/config:/srv/config
-    #   - ./goaccess/data:/srv/data
-    #   - ./goaccess/html:/srv/report
-    #   - ./data/nginx/log:/srv/logs
     command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/logs/access.log"]
 
     ports:
@@ -19,25 +14,18 @@ services:
     networks:
       - currikidev-laravel
 
-  currikidev-goaccess-nginx:
-    image: currikidev_goaccess_nginx:1.0.0
-    container_name: currikidev-goaccess-nginx
-    depends_on: 
-      - currikidev-goaccess
-    # volumes:
-    #   - ./data/nginx/goaccess-conf:/etc/nginx/conf.d
-    #   - ./data/certbot/conf:/etc/letsencrypt
-    #   - ./data/certbot/www:/var/www/certbot
-    #   - ./goaccess/html:/usr/share/nginx/html
-    ports:
-      - 7891:80
-    networks:
-      - currikidev-laravel
+  # currikidev-goaccess-nginx:
+  #   image: currikidev/goaccess-nginx:1.0.0
+  #   container_name: currikidev-goaccess-nginx
+  #   depends_on: 
+  #     - currikidev-goaccess
+  #   ports:
+  #     - 7891:80
+  #   networks:
+  #     - currikidev-laravel
 
   currikidev-nginx:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./nginx
+    image: currikidev/nginx:1.0.0
     volumes:
       - ./data/nginx/log:/var/log/nginx
     container_name: currikidev-nginx
@@ -53,17 +41,12 @@ services:
       - currikidev-laravel
 
   currikidev-mysql:
-    image: mysql:5.7.22
+    image: currikidev/mysql:1.0.0
     container_name: currikidev-mysql
     restart: unless-stopped
     tty: true
     ports:
       - ${MYSQL_LOCAL_PORT}:3306
-    # volumes:
-      # - currikidev-mysqldata:/var/lib/mysql
-      # - ./tmp/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
-      # - ./tmp/database/install_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
-      # - ./mysqlscripts:/mysqlscripts
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -75,18 +58,11 @@ services:
     networks:
       - currikidev-laravel
   
-
-  
   currikidev-auth-api:
-    build:
-      dockerfile: ./ActiveLearningStudio-API/Dockerfile.dev
-      context: .
+    image: currikidev/auth-api:1.0.0
     container_name: currikidev-auth-api
     ports:
       - ${LARAVEL_AUTH_API_LOCAL_PORT}:8000
-    # volumes:
-    #   - ./ActiveLearningStudio-API:/var/www/html
-    #   - ./php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - currikidev-mongodb
     restart: always
@@ -95,15 +71,10 @@ services:
     
 
   currikidev-laravel-api:
-    build:
-      dockerfile: ./ActiveLearningStudio-laravel-api/Dockerfile.dev
-      context: .
+    image: currikidev/laravel-api:1.0.0
     container_name: currikidev-laravel-api
     ports:
       - ${LARAVEL_API_LOCAL_PORT}:9000
-    # volumes:
-    #   - ./ActiveLearningStudio-laravel-api:/var/www/html
-    #   - ./php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - currikidev-mongodb
     restart: always
@@ -111,17 +82,11 @@ services:
       - currikidev-laravel
 
 
-  
   currikidev-h5p-api:
-    build:
-      dockerfile: ./ActiveLearningStudio-h5p/Dockerfile.dev
-      context: .
+    image: currikidev/h5p-api:1.0.0
     container_name: currikidev-h5p-api
     ports:
       - ${LARAVEL_H5P_API_PORT}:7000
-    # volumes:
-    #   - ./ActiveLearningStudio-h5p:/var/www/html
-    #   - ./php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - currikidev-mysql
     restart: always
@@ -130,57 +95,24 @@ services:
     
 
   currikidev-lti-provider:
-    build:
-      dockerfile: ./ActiveLearningStudio-lti-provider/Dockerfile.dev
-      context: .
+    image: currikidev/lti-provider:1.0.0
     container_name: currikidev-lti-provider
     ports:
       - ${LTI_PROVIDER_LOCAL_PORT}:9500
-    # volumes:
-    #   - ./ActiveLearningStudio-lti-provider:/var/www/html
-    #   - ./php.ini:/usr/local/etc/php/php.ini
     depends_on:
       - currikidev-mongodb
     restart: always
     networks:
       - currikidev-laravel
-
-      
-  # composer:
-  #   image: composer:latest
-  #   container_name: currikidev-composer
-  #   volumes:
-  #     - ./ActiveLearningStudio-laravel-api:/var/www/html
-  #   working_dir: /var/www/html
-  #   depends_on:
-  #     - currikidev-laravel-api
-  #   networks:
-  #     - currikidev-laravel
-      
-  # artisan:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: currikidev-artisan
-  #   volumes:
-  #     - ./ActiveLearningStudio-laravel-api:/var/www/html
-  #   depends_on:
-  #     - currikidev-mysql
-  #   working_dir: /var/www/html
-  #   entrypoint: ['/var/www/html/artisan']
-  #   networks:
-  #     - currikidev-laravel
       
   currikidev-phpmyadmin:
+    image: currikidev/phpmyadmin:1.0.0
     depends_on:
       - currikidev-mysql
-    image: currikidev-phpmyadmin
     container_name: currikidev-phpmyadmin
     restart: always
     ports:
       - 8088:80
-    # volumes:
-    #   - ./php.ini:/usr/local/etc/php/php.ini
     environment:
       PMA_HOST: currikidev-mysql
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -189,34 +121,24 @@ services:
       - currikidev-laravel
 
   currikidev-mongodb:
+    image: currikidev/mongodb:1.0.0
     container_name: currikidev-mongodb
-    image: mongo
     restart: always
     working_dir: /var/app/current
     command: mongod
     ports:
       - "28018:27017"
-    # environment:
-    #   - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
-    #   - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-    #   - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     volumes:
       - currikidev-mongodbdata:/data/db
       - ./mongoscripts:/var/app/current/mongoscripts
-      # - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     networks:
       - currikidev-laravel
 
   currikidev-client:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./ActiveLearningStudio-react-client
+    image: currikidev/client:1.0.0
     container_name: currikidev-client
     ports:
       - ${CLIENT_LOCAL_PORT}:3000
-    # volumes:
-    #   - /var/app/current/node_modules
-    #   - ./ActiveLearningStudio-react-client:/var/app/current
     restart: always
     stdin_open: true
     networks:

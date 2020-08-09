@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+    kompose.cmd: kompose convert -f docker-compose.k8s.yml -o yamls/
     kompose.version: 1.21.0 ()
   creationTimestamp: null
   labels:
@@ -17,7 +17,7 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+        kompose.cmd: kompose convert -f docker-compose.k8s.yml -o yamls/
         kompose.version: 1.21.0 ()
       creationTimestamp: null
       labels:
@@ -29,8 +29,8 @@ spec:
         - --no-global-config
         - --config-file=/srv/config/goaccess.conf
         - --log-file=/srv/logs/access.log
-        image: currikidev-goaccess:1.0.0
-        imagePullPolicy: ""
+        image: currikidev/goaccess:1.0.0
+        imagePullPolicy: IfNotPresent
         name: currikidev-goaccess
         ports:
         - containerPort: 7890

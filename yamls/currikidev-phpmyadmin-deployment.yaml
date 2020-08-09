@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+    kompose.cmd: kompose convert -f docker-compose.k8s.yml -o yamls/
     kompose.version: 1.21.0 ()
   creationTimestamp: null
   labels:
@@ -13,12 +13,11 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: currikidev-phpmyadmin
-  strategy:
-    type: Recreate
+  strategy: {}
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+        kompose.cmd: kompose convert -f docker-compose.k8s.yml -o yamls/
         kompose.version: 1.21.0 ()
       creationTimestamp: null
       labels:
@@ -31,19 +30,13 @@ spec:
         - name: PMA_ABSOLUTE_URI
         - name: PMA_HOST
           value: currikidev-mysql
-        image: phpmyadmin/phpmyadmin
-        imagePullPolicy: ""
+        image: currikidev/phpmyadmin:1.0.0
+        imagePullPolicy: IfNotPresent
         name: currikidev-phpmyadmin
         ports:
         - containerPort: 80
         resources: {}
-        volumeMounts:
-        - mountPath: /usr/local/etc/php/php.ini
-          name: currikidev-phpmyadmin-claim0
       restartPolicy: Always
       serviceAccountName: ""
-      volumes:
-      - name: currikidev-phpmyadmin-claim0
-        persistentVolumeClaim:
-          claimName: currikidev-phpmyadmin-claim0
+      volumes: null
 status: {}

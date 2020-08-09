@@ -4,11 +4,11 @@ FROM nginx:1.15-alpine
 
 # from volume: ./data/nginx/goaccess-conf:/etc/nginx/conf.d
 RUN mkdir -p /etc/nginx/conf.d
-COPY data/nginx/goaccess-conf/* /etc/nginx/conf.d
+COPY data/nginx/goaccess-conf/ /etc/nginx/conf.d
 
 # from volume: ./data/certbot/conf:/etc/letsencrypt
 RUN mkdir -p /etc/letsencrypt
-COPY data/certbot/conf/* /etc/letsencrypt/
+COPY data/certbot/conf/ /etc/letsencrypt/
 
 # from volume: ./data/certbot/www:/var/www/certbot
 RUN mkdir -p /var/www/certbot
@@ -16,4 +16,4 @@ COPY data/certbot/www /var/www/certbot
 
 # from volume: ./goaccess/html:/usr/share/nginx/html
 RUN mkdir -p /usr/share/nginx/html
-COPY goaccess/html/* /usr/share/nginx/html/
+COPY goaccess/html/ /usr/share/nginx/html/

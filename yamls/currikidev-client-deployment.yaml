@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+    kompose.cmd: kompose convert -f docker-compose.k8s.yml -o yamls/
     kompose.version: 1.21.0 ()
   creationTimestamp: null
   labels:
@@ -13,12 +13,11 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: currikidev-client
-  strategy:
-    type: Recreate
+  strategy: {}
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+        kompose.cmd: kompose convert -f docker-compose.k8s.yml -o yamls/
         kompose.version: 1.21.0 ()
       creationTimestamp: null
       labels:
@@ -26,25 +25,14 @@ spec:
         io.kompose.service: currikidev-client
     spec:
       containers:
-      - image: currikidev-client
-        imagePullPolicy: ""
+      - image: currikidev/client:1.0.0
+        imagePullPolicy: IfNotPresent
         name: currikidev-client
         ports:
         - containerPort: 3000
         resources: {}
         stdin: true
-        volumeMounts:
-        - mountPath: /var/app/current/node_modules
-          name: currikidev-client-claim0
-        - mountPath: /var/app/current
-          name: currikidev-client-claim1
       restartPolicy: Always
       serviceAccountName: ""
-      volumes:
-      - name: currikidev-client-claim0
-        persistentVolumeClaim:
-          claimName: currikidev-client-claim0
-      - name: currikidev-client-claim1
-        persistentVolumeClaim:
-          claimName: currikidev-client-claim1
+      volumes: null
 status: {}

@@ -41,12 +41,12 @@ RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
 
 # Copy the PHP configuration file
 COPY ./php.ini /usr/local/etc/php/
-COPY ActiveLearningStudio-API/* /var/www/html/
+COPY ActiveLearningStudio-API/ /var/www/html/
 
-# For some weird reason, the ActiveLearningStudio-laravvel-api/public folder
-# doesn't get COPY'ed in the above command; therefore, I explicitly add it.
-RUN mkdir -p /var/www/html/public
-COPY ActiveLearningStudio-API/public/* /var/www/html/public/
+# # For some weird reason, the ActiveLearningStudio-laravvel-api/public folder
+# # doesn't get COPY'ed in the above command; therefore, I explicitly add it.
+# RUN mkdir -p /var/www/html/public
+# COPY ActiveLearningStudio-API/public/* /var/www/html/public/
 
 RUN service apache2 restart
 

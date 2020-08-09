@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+    kompose.cmd: kompose convert -f docker-compose.k8s.yml -o yamls/
     kompose.version: 1.21.0 ()
   creationTimestamp: null
   labels:
@@ -17,7 +17,7 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose convert -f docker-compose.yml -o yamls/
+        kompose.cmd: kompose convert -f docker-compose.k8s.yml -o yamls/
         kompose.version: 1.21.0 ()
       creationTimestamp: null
       labels:
@@ -34,8 +34,8 @@ spec:
           value: mysql
         - name: SERVICE_TAGS
           value: dev
-        image: mysql:5.7.22
-        imagePullPolicy: ""
+        image: currikidev/mysql:1.0.0
+        imagePullPolicy: IfNotPresent
         name: currikidev-mysql
         ports:
         - containerPort: 3306

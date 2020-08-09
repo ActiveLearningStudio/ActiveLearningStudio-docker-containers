@@ -1,6 +1,17 @@
 FROM node:8.9.3-alpine
 WORKDIR /var/app/current
+RUN ls /var/app/current
 COPY ActiveLearningStudio-react-client/package*.json ./
+RUN ls /var/app/current
+COPY ActiveLearningStudio-react-client/package.json /var/app/current/
 RUN npm install
-COPY ActiveLearningStudio-react-client/* ./
+COPY ActiveLearningStudio-react-client/ ./
+
+# # For some weird reason, the ActiveLearningStudio-laravvel-api/public folder
+# # doesn't get COPY'ed in the above command; therefore, I explicitly add it.
+# RUN mkdir -p /var/app/current/public
+# COPY ActiveLearningStudio-react-client/public/* /var/app/current/public/
+
+RUN ls /var/app/current
+
 CMD ["npm", "run", "start:dev"]
