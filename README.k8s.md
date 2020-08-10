@@ -28,10 +28,23 @@ Note: by default, `kompose` sets `ImagePullPolicy: ""`, which defaults to "Alway
 
 ### Deploying to k8s
 
-To get all of your pods running, do `for $f in yamls/* ; do kubectl apply -f $f; done`. Note: *I'm still working on getting this part working; for some reason, images aren't showing up properly.*
+To get all of your pods running, do `for $f in yamls/* ; do kubectl apply -f $f; done`. Note: three images currently do not deploy properly: goaccess, goaccess_nginx, and mysql.
 
 
-# Next steps
+# TODO's remaining:
 
-* I need to debug the reason why the k8s pods can't find the images from my docker desktop registry.
-* I will need to figure out how to expose the proper services for traffic within the network.
+* Adding environment variables to the mysql pod. Here's a good start: https://kubernetes.io/docs/concepts/configuration/secret/ (note: I don't have too much experience with this part)
+* Exposing services to outside traffic. Here's a good article on opening traffic: https://www.ovh.com/blog/getting-external-traffic-into-kubernetes-clusterip-nodeport-loadbalancer-and-ingress/
+  * The question next becomes, do we still need the nginx loadbalancers? We can specify a service as `type: LoadBalancer`, and the k8s daemon will automatically ask the cloudprovider to create a LoadBalancer that distributes traffic among the pods running a service. The problem is that we end up creating one loadbalancer per externally-facing service, which is perfectly fine right now but not ideal when we have 300 or so services.
+  * Using a NodePort in production is another strategy, but it requires manually configuring a load balancer to direct traffic at the correct ports on the correct set of nodes.
+  * One more alternative is to simply deploy Istio. We would need to discuss this in more detail, but we're about to finish the deployment at REX. Istio has a concept called a "gateway". We define routing rules based on attributes at either Layer 3, 4, or 7, and then the gateway routes traffic to services (or virtual services, which is another great Istio feature) based on the routing rules.
+  * *Colt, what's the "Simplest Solution"?* I'm not an expert, but I think the simplest would be for now to just define `type: LoadBalancer` for every external facing service.
+* Make sure that every service that needs to send traffic within the cluster to other services is still able to do so. For example, to make a request to the laravel api from the h5p service, I would type `curl http://currikidev-laravel-api/`, and k8s will automatically route the request. Since the traffic never leaves the cluster, we don't need to bother with https.
+
+# Great, so now how do we deploy to a real cluster that's not just docker desktop?
+* Three steps:
+  * Push docker images to docker hub.
+  * Finalize our k8s yaml files (edit based on the TODO's above), and put them on github
+  * Deploying is as simple as `for file in *yamls ; do kubectl apply -f $file ; done`. It's cluster-agnostic. The only magic part that we may have to deal with is the DNS (which I've not set up personally, but between me, Leo, and Ali we should be able to figure it out)
+
+
