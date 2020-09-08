@@ -1,6 +1,10 @@
-ActiveLearningStudio-*
 logs/*
-goaccess/*
-currikidev-mysqldata/*
+mongoscripts/*
+data/*
 tmp/*
+ActiveLearningStudio-laravel-api
+ActiveLearningStudio-API
+ActiveLearningStudio-lti-provider
+ActiveLearningStudio-h5p
 .git
+

@@ -1,4 +1,4 @@
-TAG_VERSION=1.0.0  # TODO: Do something less dumb than this
+TAG_VERSION=test1.0.0  # TODO: Do something less dumb than this
 
 build: goaccess goaccess-nginx nginx laravel-api auth-api h5p-api lti-provider phpmyadmin mongodb client
 
@@ -26,7 +26,7 @@ auth-api:
 
 laravel-api:
 	cp .{laravel_api_,}dockerignore
-	docker build -t currikidev/laravel-api:${TAG_VERSION} -f Dockerfile.laravel_api .
+	docker build -t curriki/laravel-api:${TAG_VERSION} -f Dockerfile.laravel_api .
 
 h5p-api:
 	cp .{h5p_api_,}dockerignore
