@@ -13,8 +13,10 @@ An example command is `eksctl create cluster --name amedhi-test-cluster --nodegr
 ### Create secret for the API and client.
 
 Run these commands to create the secret with the API and Client environment variables:
-```kubectl create secret generic currikidev-laravel-api-env --from-file=.env
-kubectl create secret generic currikidev-client-env --from-file=.env.local```
+```
+kubectl create secret generic currikidev-laravel-api-env --from-file=.env
+kubectl create secret generic currikidev-client-env --from-file=.env.local
+```
 If you wish to change the content of the secret, just edit the files `.env` and `.env.local` in this directory.
 
 
