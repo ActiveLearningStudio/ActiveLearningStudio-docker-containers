@@ -24,7 +24,16 @@ spec:
         ports:
         - containerPort: 3000
         stdin: true
+        volumeMounts:
+          - mountPath: /var/app/current/env
+            name: "currikidev-client-secret"
+            readOnly: true
       restartPolicy: Always
+      volumes:
+        - name: "currikidev-client-secret"
+          secret:
+            secretName: "currikidev-client-secret"
+
 
 ---
 apiVersion: v1

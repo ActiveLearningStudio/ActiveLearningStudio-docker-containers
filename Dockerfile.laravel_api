@@ -40,10 +40,12 @@ RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
 
 # Copy the PHP configuration file
 COPY ./php.ini /usr/local/etc/php/
-COPY ActiveLearningStudio-laravel-api/ /var/www/html/
+COPY ActiveLearningStudio-API/ /var/www/html/
 
 WORKDIR /var/www/html
 RUN composer install --no-dev --prefer-dist --optimize-autoloader && \
     composer clear-cache
 
-RUN service apache2 restart
+# RUN service apache2 restart
+COPY entrypoint.api.sh /var/www/html/
+ENTRYPOINT [ "/var/www/html/entrypoint.api.sh" ]

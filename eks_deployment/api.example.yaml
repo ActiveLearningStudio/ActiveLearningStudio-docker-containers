@@ -42,7 +42,7 @@ spec:
         io.kompose.service: currikidev-laravel-api
     spec:
       containers:
-      - image: curriki/laravel_api:test1.0.0
+      - image: curriki/laravel-api:test1.0.0
         imagePullPolicy: Always
         name: currikidev-laravel-api
         envFrom:
@@ -50,9 +50,14 @@ spec:
               name: currikidev-laravel-api-env
         ports:
         - containerPort: 9000
+        stdin: true
         volumeMounts:
           - mountPath: /var/www/html/storage
             name: currikidev-laravel-api-storage
+            readOnly: false
+          - mountPath: /var/www/html/env
+            name: "currikidev-laravel-api-secret"
+            readOnly: true
         resources: {}
       restartPolicy: Always
       serviceAccountName: ""
@@ -60,6 +65,9 @@ spec:
         - name: currikidev-laravel-api-storage
           persistentVolumeClaim:
             claimName: currikidev-laravel-api-storage
+        - name: "currikidev-laravel-api-secret"
+          secret:
+            secretName: "currikidev-laravel-api-secret"
 
 ---
 apiVersion: v1

@@ -9,4 +9,6 @@ COPY ActiveLearningStudio-react-client/ ./
 
 RUN ls /var/app/current
 
-CMD ["npm", "run", "start:dev"]
+COPY entrypoint.client.sh /var/app/current/
+CMD ["/bin/sh", "/var/app/current/entrypoint.client.sh"]
+# CMD ["npm", "run", "start:dev"]
