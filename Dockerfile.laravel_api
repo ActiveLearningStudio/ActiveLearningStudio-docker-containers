@@ -46,6 +46,8 @@ WORKDIR /var/www/html
 RUN composer install --no-dev --prefer-dist --optimize-autoloader && \
     composer clear-cache
 
+RUN chown -R 1000 /var/www/html
+
 # RUN service apache2 restart
 COPY entrypoint.api.sh /var/www/html/
 ENTRYPOINT [ "/var/www/html/entrypoint.api.sh" ]

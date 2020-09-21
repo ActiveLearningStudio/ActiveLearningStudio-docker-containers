@@ -2,9 +2,7 @@ logs/*
 mongoscripts/*
 data/*
 tmp/*
-ActiveLearningStudio-laravel-api
-ActiveLearningStudio-API
-ActiveLearningStudio-lti-provider
 ActiveLearningStudio-h5p
+ActiveLearningStudio-lti-provider
+ActiveLearningStudio-react-client
 .git
-
