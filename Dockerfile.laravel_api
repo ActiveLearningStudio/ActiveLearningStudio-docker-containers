@@ -24,6 +24,9 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install opcache \
     && pecl install mongodb apcu && docker-php-ext-enable mongodb apcu opcache
 
+RUN docker-php-ext-configure pgsql &&  docker-php-ext-install pdo_pgsql
+
+
 RUN docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl
 RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/
 RUN docker-php-ext-install gd
@@ -37,6 +40,8 @@ RUN a2dissite 000-default.conf && a2ensite site.conf && a2enmod rewrite
 # Change uid and gid of apache to docker user uid/gid
 RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
 #RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+
+RUN docker-php-ext-install pdo pdo_pgsql
 
 # Copy the PHP configuration file
 COPY ./php.ini /usr/local/etc/php/
