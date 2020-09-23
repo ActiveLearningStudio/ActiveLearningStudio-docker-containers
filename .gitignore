@@ -2,3 +2,5 @@
 /backup
 /data/certbot
 *~
+eks_deployment/.env
+eks_deployment/.env.local

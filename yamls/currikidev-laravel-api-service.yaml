@@ -9,6 +9,7 @@ metadata:
     io.kompose.service: currikidev-laravel-api
   name: currikidev-laravel-api
 spec:
+  type: LoadBalancer
   ports:
   - name: "9000"
     port: 9000

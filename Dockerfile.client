@@ -7,11 +7,8 @@ COPY ActiveLearningStudio-react-client/package.json /var/app/current/
 RUN npm install
 COPY ActiveLearningStudio-react-client/ ./
 
-# # For some weird reason, the ActiveLearningStudio-laravvel-api/public folder
-# # doesn't get COPY'ed in the above command; therefore, I explicitly add it.
-# RUN mkdir -p /var/app/current/public
-# COPY ActiveLearningStudio-react-client/public/* /var/app/current/public/
-
 RUN ls /var/app/current
 
-CMD ["npm", "run", "start:dev"]
+COPY entrypoint.client.sh /var/app/current/
+CMD ["/bin/sh", "/var/app/current/entrypoint.client.sh"]
+# CMD ["npm", "run", "start:dev"]

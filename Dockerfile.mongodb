@@ -1,7 +1,0 @@
-FROM mongo
-
-RUN mkdir -p /data
-COPY currikidev-mongodbdata /data/db
-
-RUN mkdir -p /var/app/current/mongoscripts
-COPY mongoscripts /var/app/current/

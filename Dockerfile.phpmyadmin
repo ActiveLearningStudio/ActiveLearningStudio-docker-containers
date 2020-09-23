@@ -1,2 +1,0 @@
-FROM phpmyadmin/phpmyadmin
-COPY php.ini phpmyadmin
