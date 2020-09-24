@@ -47,7 +47,7 @@ spec:
         name: currikidev-laravel-api
         envFrom:
           - secretRef:
-              name: currikidev-laravel-api-env
+              name: currikidev-laravel-api-secret
         ports:
         - containerPort: 9000
         stdin: true
