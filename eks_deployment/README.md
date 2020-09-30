@@ -38,6 +38,8 @@ To view one of the two dashboards, run `istioctl dashboard {grafana,prometheus}`
 ### Enable EFS-backed PersistentVolumes
 By default, EKS uses EBS for the backend storage for its `PersistentVolume` implementation. Unfortunately, EBS-backed `PersistentVolume`s only support the `ReadWriteOnce` access mode, which means they can only be accessed by pods on the same node. This does not scale well. However, we can enable the `ReadWriteMany` access mode with EFS. See this documentation [here](https://aws.amazon.com/premiumsupport/knowledge-center/eks-persistent-storage/). Use the second option for EFS, not EBS. Make careful note of the output of all create commands.
 
+#### Important note: You will need to edit the `api.yaml` file to include the `volumeHandle` with the id of the volumeHandle created. The `api.yaml` file WILL NOT WORK until this change is made. Specifically, you will need to change the string `fs-537b34b3` to whatever ID AWS returns when you create the volume mount.
+
 
 ### Deploy the API and Client
 Edit the `api.yaml` file to point to the PersistentVolume `volumeHandle` to point to your EFS filesystem. Next, edit both the `api.yaml` and `client.yaml` files' "Deployment" sections to point to the image that you want to deploy. Once you've configured the files (*TODO* write a bash script that does this step automatically), run this:
