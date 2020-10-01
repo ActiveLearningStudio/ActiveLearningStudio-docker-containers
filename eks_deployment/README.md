@@ -1,3 +1,7 @@
+# AWS Stack
+
+![](EKS-CloudFormationDiagram.png)
+
 # Deploying to kubernetes.
 
 Below are the steps needed to install CurrikiStudio on a kubernetes cluster.
