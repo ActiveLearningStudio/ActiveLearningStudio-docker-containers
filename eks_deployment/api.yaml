@@ -5,16 +5,16 @@
     annotations:
       app: api
     labels:
-      io.kompose.service: currikidev-laravel-api
-    name: currikidev-laravel-api
+      io.kompose.service: currikidev-api
+    name: currikidev-api
   spec:
     type: ClusterIP
     ports:
-    - name: "9000"
-      port: 9000
-      targetPort: 9000
+    - name: "8000"
+      port: 8000
+      targetPort: 8000
     selector:
-      io.kompose.service: currikidev-laravel-api
+      io.kompose.service: currikidev-api
 
 
 ---
@@ -22,14 +22,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    io.kompose.service: currikidev-laravel-api
+    io.kompose.service: currikidev-api
     app: api
-  name: currikidev-laravel-api
+  name: currikidev-api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: currikidev-laravel-api
+      io.kompose.service: currikidev-api
   strategy: {}
   template:
     metadata:
@@ -39,27 +39,27 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.network/currikidev-laravel: "true"
-        io.kompose.service: currikidev-laravel-api
+        io.kompose.service: currikidev-api
     spec:
       containers:
       - image: curriki/laravel_api:test1.0.0
         imagePullPolicy: Always
-        name: currikidev-laravel-api
+        name: currikidev-api
         envFrom:
           - secretRef:
-              name: currikidev-laravel-api-env
+              name: currikidev-api-env
         ports:
-        - containerPort: 9000
+        - containerPort: 8000
         volumeMounts:
           - mountPath: /var/www/html/storage
-            name: currikidev-laravel-api-storage
+            name: currikidev-api-storage
         resources: {}
       restartPolicy: Always
       serviceAccountName: ""
       volumes:
-        - name: currikidev-laravel-api-storage
+        - name: currikidev-api-storage
           persistentVolumeClaim:
-            claimName: currikidev-laravel-api-storage
+            claimName: currikidev-api-storage
 
 ---
 kind: StorageClass
@@ -90,7 +90,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: currikidev-laravel-api-storage
+  name: currikidev-api-storage
 spec:
   accessModes:
     - ReadWriteMany
