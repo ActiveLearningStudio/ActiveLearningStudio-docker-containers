@@ -42,7 +42,7 @@ spec:
         io.kompose.service: currikidev-api
     spec:
       containers:
-      - image: curriki/laravel_api:test1.0.0
+      - image: curriki/laravel_api:test2.0.0
         imagePullPolicy: Always
         name: currikidev-api
         envFrom:
