@@ -28,7 +28,7 @@ spec:
         prefix: /api
     route:
     - destination:
-        host: currikidev-laravel-api
+        host: currikidev-api
   - match:
     - uri:
         prefix: /
