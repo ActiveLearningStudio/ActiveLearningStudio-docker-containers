@@ -122,3 +122,7 @@ Lastly:
 cat efs_filesystem_id
 ```
 And use that id as the volumeHandle in the `api.yaml` file.
+
+# *NOTE*
+The above section came fully from here: https://aws.amazon.com/premiumsupport/knowledge-center/eks-persistent-storage/
+
