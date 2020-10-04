@@ -81,3 +81,44 @@ See the Istio documentation on Secure Gateways. This seems like a reasonable pla
 * Enable production Prometheus and Grafana.
 * Write scripts to automate deployment (build with a certain tag and use `sed` or something to edit the yaml files and specify an image tag automatically).
 * If Ali decides to use .env files rather than environment variables, change the way we use Secrets.
+
+
+# Example Script To Enable EFS:
+
+This is by no means fully comprehensive, but take a look. NOTE: replace `curriki-eks-cluster-2` with the proper name of your cluster.
+
+```
+kubectl apply -k "github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable/?ref=master"
+aws eks describe-cluster --name curriki-eks-cluster-2 --query "cluster.resourcesVpcConfig.vpcId" --output text > cluster_vpc_id
+aws ec2 describe-vpcs --vpc-ids $(cat cluster_vpc_id) --query "Vpcs[].CidrBlock" --output text > cluster_cidr_range
+
+echo "curriki-efs-eks-sg" > sg_name
+aws ec2 create-security-group --description efs-test-sg --group-name $(cat sg_name) --vpc-id $(cat cluster_vpc_id) > sg_output
+
+cat sg_output
+```
+At this point, look at the output of sg_output and create a file `sg_id` with the security group id from that file.
+
+```
+aws ec2 authorize-security-group-ingress --group-id $(cat sg_id)  --protocol tcp --port 2049 --cidr $(cat cluster_cidr_range)
+aws efs create-file-system --creation-token eks-efs > efs_output
+cat efs_output
+```
+
+Once again, create a file `efs_filesystem_id` from the Filesystem Id that you see from above.
+
+The last part is tricky—we need to create a mount target for each subnet in the VPC. So first we get the subnets:
+
+```
+aws eks describe-cluster --name curriki-eks-cluster-2 --query "cluster.resourcesVpcConfig.subnetIds[]" --output text > subnet_ids
+
+# then, we create the mount targets
+for subnet_id in $(cat subnet_ids) ; do aws efs create-mount-target --file-system-id $(cat efs_filesystem_id) --subnet-id $subnet_id --security-group  $(cat sg_id) ; done
+```
+
+Lastly:
+
+```
+cat efs_filesystem_id
+```
+And use that id as the volumeHandle in the `api.yaml` file.
