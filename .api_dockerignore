@@ -6,3 +6,4 @@ ActiveLearningStudio-h5p
 ActiveLearningStudio-lti-provider
 ActiveLearningStudio-react-client
 .git
+*.env*

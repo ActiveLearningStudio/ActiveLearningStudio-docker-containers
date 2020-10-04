@@ -16,7 +16,6 @@
     selector:
       io.kompose.service: currikidev-api
 
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -42,7 +41,7 @@ spec:
         io.kompose.service: currikidev-api
     spec:
       containers:
-      - image: curriki/laravel_api:test2.0.0
+      - image: curriki/api:test2.0.0
         imagePullPolicy: Always
         name: currikidev-api
         envFrom:
@@ -53,6 +52,10 @@ spec:
         volumeMounts:
           - mountPath: /var/www/html/storage
             name: currikidev-api-storage
+            readOnly: false
+          - mountPath: /var/www/html/env
+            name: "currikidev-api-env"
+            readOnly: true
         resources: {}
       restartPolicy: Always
       serviceAccountName: ""
@@ -60,6 +63,10 @@ spec:
         - name: currikidev-api-storage
           persistentVolumeClaim:
             claimName: currikidev-api-storage
+        - name: "currikidev-api-env"
+          secret:
+            secretName: "currikidev-api-env"
+
 
 ---
 kind: StorageClass
@@ -75,7 +82,7 @@ metadata:
   name: laravel-storage-efs-pv
 spec:
   capacity:
-    storage: 5Gi
+    storage: 500Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
@@ -83,7 +90,7 @@ spec:
   storageClassName: efs-sc
   csi:
     driver: efs.csi.aws.com
-    volumeHandle: fs-5e7be4b3
+    volumeHandle: fs-d521b5ad
   
 
 ---
@@ -97,20 +104,5 @@ spec:
   storageClassName: efs-sc
   resources:
     requests:
-      storage: 5Gi
+      storage: 500Gi
 ---
-
-
-  # spec:
-  #   accessModes:
-  #   - ReadWriteMany
-  #   capacity:
-  #     storage: 5Gi
-  #   volumeMode: Filesystem
-  #   accessModes:
-  #     - ReadWriteMany
-  #   persistentVolumeReclaimPolicy: Retain
-  #   storageClassName: efs-sc
-  #   csi:
-  #     driver: efs.csi.aws.com
-  #     volumeHandle: fs-5e7be4b3
