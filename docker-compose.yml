@@ -3,230 +3,113 @@ networks:
   laravel:
 services:
 
-  currikidev-goaccess:
-    image: allinurl/goaccess
-    container_name: currikidev-goaccess
-    restart: always
-    volumes:
-      - ./goaccess/config:/srv/config
-      - ./goaccess/data:/srv/data
-      - ./goaccess/html:/srv/report
-      - ./data/nginx/log:/srv/logs
-    command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf", "--log-file=/srv/logs/access.log"]
-
-    ports:
-      - 7890:7890
-    networks:
-      - currikidev-laravel
-
-  currikidev-goaccess-nginx:
+  currikiprod-nginx:
     image: nginx:1.15-alpine
-    container_name: currikidev-goaccess-nginx
-    depends_on: 
-      - currikidev-goaccess
+    restart: unless-stopped
+    container_name: currikiprod-nginx
     volumes:
-      - ./data/nginx/goaccess-conf:/etc/nginx/conf.d
+      - ./data/nginx/prod-conf:/etc/nginx/conf.d
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
-      - ./goaccess/html:/usr/share/nginx/html
-    ports:
-      - 7891:80
-    networks:
-      - currikidev-laravel
-
-  currikidev-nginx:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./nginx
-    volumes:
       - ./data/nginx/log:/var/log/nginx
-    container_name: currikidev-nginx
     ports:
       - ${FRONT_MAIN_PORT}:80
-    restart: always
+      - 443:443
     depends_on:
-      - currikidev-laravel-api
-      - currikidev-mysql
-      - currikidev-client
-      - currikidev-lti-provider
+      - currikiprod-client
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     networks:
-      - currikidev-laravel
- 
+      - currikiprod-laravel  
 
-  currikidev-mysql:
-    image: mysql:5.7.22
-    container_name: currikidev-mysql
+  certbot:
+    image: certbot/certbot
     restart: unless-stopped
-    tty: true
-    ports:
-      - ${MYSQL_LOCAL_PORT}:3306
     volumes:
-      - currikidev-mysqldata:/var/lib/mysql
-      - ./tmp/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
-      - ./tmp/database/install_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
-      - ./mysqlscripts:/mysqlscripts
-    environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    # command: mysqld --init-file="/tmp/database/install_db.sql"
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     networks:
-      - currikidev-laravel
-  
+      - currikiprod-laravel
 
-  
-  currikidev-auth-api:
-    build:
-      dockerfile: ./ActiveLearningStudio-API/Dockerfile.dev
-      context: .
-    container_name: currikidev-auth-api
-    ports:
-      - ${LARAVEL_AUTH_API_LOCAL_PORT}:8000
-    volumes:
-      - ./ActiveLearningStudio-API:/var/www/html
-      - ./php.ini:/usr/local/etc/php/php.ini
-    depends_on:
-      - currikidev-mongodb
-    restart: always
-    networks:
-      - currikidev-laravel
     
-
-  currikidev-laravel-api:
+  currikiprod-api:
     build:
-      dockerfile: ./ActiveLearningStudio-laravel-api/Dockerfile.dev
+      dockerfile: ./api/Dockerfile.dev
       context: .
-    container_name: currikidev-laravel-api
+    container_name: currikiprod-api
     ports:
-      - ${LARAVEL_API_LOCAL_PORT}:9000
+      - ${LARAVEL_API_LOCAL_PORT}:8000
+      - 4003:4003
     volumes:
-      - ./ActiveLearningStudio-laravel-api:/var/www/html
+      - ./api:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
-    depends_on:
-      - currikidev-mongodb
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     restart: always
     networks:
-      - currikidev-laravel
+      - currikiprod-laravel
 
-
-  
-  currikidev-h5p-api:
+  currikiprod-admin:
     build:
-      dockerfile: ./ActiveLearningStudio-h5p/Dockerfile.dev
+      dockerfile: ./admin/Dockerfile.dev
       context: .
-    container_name: currikidev-h5p-api
+    container_name: currikiprod-admin
     ports:
-      - ${LARAVEL_H5P_API_PORT}:7000
+      - ${LARAVEL_ADMIN_LOCAL_PORT}:6000
     volumes:
-      - ./ActiveLearningStudio-h5p:/var/www/html
+      - ./admin:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
-    depends_on:
-      - currikidev-mysql
     restart: always
     networks:
-      - currikidev-laravel
-    
+      - currikiprod-laravel    
 
-  currikidev-lti-provider:
+  currikiprod-client:
     build:
-      dockerfile: ./ActiveLearningStudio-lti-provider/Dockerfile.dev
+      dockerfile: Dockerfile.prod
+      context: ./client
+    container_name: currikiprod-client
+    volumes:
+      - /app/build
+      - /app/node_modules
+      - ./client:/app
+    restart: always
+    networks:
+      - currikiprod-laravel
+
+  currikiprod-trax:
+    build:
+      dockerfile: ./trax-lrs/Dockerfile.dev
       context: .
-    container_name: currikidev-lti-provider
+    container_name: currikiprod-trax
     ports:
-      - ${LTI_PROVIDER_LOCAL_PORT}:9500
+      - 6900:6900
     volumes:
-      - ./ActiveLearningStudio-lti-provider:/var/www/html
+      - ./trax-lrs:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
-    depends_on:
-      - currikidev-mongodb
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     restart: always
     networks:
-      - currikidev-laravel
+      - currikiprod-laravel
 
-      
-  # composer:
-  #   image: composer:latest
-  #   container_name: currikidev-composer
-  #   volumes:
-  #     - ./ActiveLearningStudio-laravel-api:/var/www/html
-  #   working_dir: /var/www/html
-  #   depends_on:
-  #     - currikidev-laravel-api
-  #   networks:
-  #     - currikidev-laravel
-      
-  # artisan:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: currikidev-artisan
-  #   volumes:
-  #     - ./ActiveLearningStudio-laravel-api:/var/www/html
-  #   depends_on:
-  #     - currikidev-mysql
-  #   working_dir: /var/www/html
-  #   entrypoint: ['/var/www/html/artisan']
-  #   networks:
-  #     - currikidev-laravel
-      
-  currikidev-phpmyadmin:
-    depends_on:
-      - currikidev-mysql
-    image: phpmyadmin/phpmyadmin
-    container_name: currikidev-phpmyadmin
-    restart: always
-    ports:
-      - 8088:80
-    volumes:
-      - ./php.ini:/usr/local/etc/php/php.ini
-    environment:
-      PMA_HOST: currikidev-mysql
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      PMA_ABSOLUTE_URI: ${PMA_ABSOLUTE_URI}
-    networks:
-      - currikidev-laravel
-
-  currikidev-mongodb:
-    container_name: currikidev-mongodb
-    image: mongo
-    restart: always
-    working_dir: /var/app/current
-    command: mongod
-    ports:
-      - "28018:27017"
-    # environment:
-    #   - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
-    #   - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-    #   - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-    volumes:
-      - currikidev-mongodbdata:/data/db
-      - ./mongoscripts:/var/app/current/mongoscripts
-      # - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-    networks:
-      - currikidev-laravel
-  currikidev-client:
+  currikiprod-tsugi:
     build:
-      dockerfile: Dockerfile.dev
-      context: ./ActiveLearningStudio-react-client
-    container_name: currikidev-client
+      dockerfile: ./tsugi/Dockerfile.dev
+      context: .
+    container_name: currikiprod-tsugi
     ports:
-      - ${CLIENT_LOCAL_PORT}:3000
+      - 6300:6300
     volumes:
-      - /var/app/current/node_modules
-      - ./ActiveLearningStudio-react-client:/var/app/current
+      - ./tsugi:/var/www/html/tsugi
+      - ./php.ini:/usr/local/etc/php/php.ini
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     restart: always
-    stdin_open: true
     networks:
-      - currikidev-laravel
-volumes: #provide volume
-    currikidev-mongodbdata:
-      external: true
-    currikidev-mysqldata:
-      external: true
+      - currikiprod-laravel
+
 
 networks:
-  currikidev-laravel:
+  currikiprod-laravel:
     driver: bridge
+

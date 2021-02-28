@@ -1,9 +1,4 @@
-logs/*
-mongoscripts/*
-data/*
-tmp/*
-ActiveLearningStudio-h5p
-ActiveLearningStudio-lti-provider
-ActiveLearningStudio-react-client
-.git
-*.env*
+api/storage/*
+api/vendor/*
+storage/*
+vendor/*
