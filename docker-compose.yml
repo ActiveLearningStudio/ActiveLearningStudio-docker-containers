@@ -58,6 +58,7 @@ services:
     ports:
       - ${LARAVEL_ADMIN_LOCAL_PORT}:6000
     volumes:
+      - /var/www/html/vendor
       - ./admin:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
     restart: always
