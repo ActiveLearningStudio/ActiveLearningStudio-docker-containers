@@ -77,3 +77,8 @@ It will take almost 40 minutes to run the containers. When the containers are up
 # Assumptions
 
 This installation assumes that you have external postgres and mysql databases setup and those credentials are being used in the environments of the project
+
+# TODO
+
+1. API Storage Setup
+2. Database setups
