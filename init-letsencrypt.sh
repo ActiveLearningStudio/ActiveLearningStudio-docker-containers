@@ -93,3 +93,4 @@ done
 echo "### Reloading nginx ..."
 docker-compose -f docker-compose-certbot.yml exec currikiprod-nginx nginx -s reload
 docker-compose -f docker-compose-certbot.yml down
+docker-compose up -d
