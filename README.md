@@ -106,3 +106,37 @@ This installation assumes that you have external postgres and mysql databases se
 
 1. API Storage Setup
 2. Database setups
+
+
+# OCI Implementation Marketplace
+
+Instance + External Volume (Block Storage)
+
+Configurations
+
+Terraform script will get the image, configure the instance and run the application
+
+There will be three images
+- CurrikiStudio
+- Image for database (Postgres + MySQL)
+
+
+
+Diagram
+
+CurrikiStudio
+ ---------------------------
+| 		Application			|
+| 		Database			|
+| 		Elastic Search		|
+ ---------------------------
+ 
+We can resize them in - small, medium large
+
+
+small = 3VMs @ 2CPUs, 1TB disk
+
+1. We fetch up these images, and spin them up
+
+2. Configurations: And once that is done we can take the user to some URL (say currikistudio.org/oci/setup) for configurations, like mail settings, Domain names onto which installation will point (demo.currikistudio.org) etc
+3. Once that is complete. User will be able to use currikistudio on the provided domain
