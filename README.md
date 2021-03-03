@@ -41,7 +41,7 @@ The purpose of this repository is to enable users run CurrikiStudio Application 
 # Pre-Requisites
 
 1. You should have [docker-compose](https://docs.docker.com/compose/install/) installed on your Linux VM
-2. docker version 19 or above
+2. Docker version 19 or above
 3. Route 53 entries of site, admin, trax, tsugi
 
 # Installation
