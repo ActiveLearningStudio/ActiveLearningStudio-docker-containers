@@ -1,13 +1,37 @@
-# Purpose
+# Introduction
 
-The purpose of this repository is to enable users run CurrikiStudio on one VM and install through docker-compose
+CurrikiStudio enables you to create interactive learning content and publish them anywhere like Google Classroom, LMSs etc
 
 # Components
-1. [React Client](https://github.com/ActiveLearningStudio/ActiveLearningStudio-react-client)
+
+## Applications
+
+1. [React Frontend application](https://github.com/ActiveLearningStudio/ActiveLearningStudio-react-client)
 2. [Backend API](https://github.com/ActiveLearningStudio/ActiveLearningStudio-API)
 3. [Admin Panel](https://github.com/ActiveLearningStudio/ActiveLearningStudio-admin-panel)
-4. [Tsugi](https://github.com/tsugiproject/tsugi)
+4. [Tsugi for LTI](https://github.com/tsugiproject/tsugi)
 5. [Trax LRS](https://github.com/trax-project/trax-lrs)
+
+## Databases
+
+1. External Postgres (For API)
+2. External MySQL (For Tsugi)
+
+## Searching
+
+1. Elastic Search (For API)
+
+# Infrastructure
+
+Our Minimal Infrastructure is composed of 3 Linux VMs. All are running docker containers inside those
+
+1. VM1: CurrikiStudio Application (From Application Part above)
+2. VM2: Databases: Postgres + MySQL
+3. VM3: Elastic Search
+
+# Purpose
+
+The purpose of this repository is to enable users run CurrikiStudio Application on first VM and install through docker-compose
 
 # Minimum Requirements
 1. 8GB RAM
