@@ -140,3 +140,36 @@ small = 3VMs @ 2CPUs, 1TB disk
 
 2. Configurations: And once that is done we can take the user to some URL (say currikistudio.org/oci/setup) for configurations, like mail settings, Domain names onto which installation will point (demo.currikistudio.org) etc
 3. Once that is complete. User will be able to use currikistudio on the provided domain
+
+
+## Diagrams
+
+
+Diagram 1:
+
+VM1 (Running Oracle enterprise linux with this shape (mention shape)) + Attached Volume  =====> Running CurrikiStudio Application
+
+(down arrow)
+
+- VM2 (Running Oracle enterprise linux with this shape (mention shape)) + Attached Volume  =====> Running CurrikiStudio Database
+- VM3 (Running Oracle enterprise linux with this shape (mention shape)) + Attached Volume  =====> Running Elastic Search
+
+
+Once we will fetch these images
+- It will create a standard file system + database on these instances
+
+
+Diagram 2:
+
+Show the form for configurations
+
+- Main Site URL
+- Admin Site URL
+- LTI Site URL
+- LRS Site URL
+- SMTP Creds (Need to configure outside the system)
+- Hubspot integration id (Need to configure outside the system)
+- Pexel api (Need to configure outside the system)
+
+Once that is submitted. It will update necessary configurations in the VMs and user will be able to see application on Main Site URL
+
