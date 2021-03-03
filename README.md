@@ -14,7 +14,7 @@ CurrikiStudio enables you to create interactive learning content and publish the
 
 ## Databases
 
-1. External Postgres (For API)
+1. External Postgres (For API, For LRS)
 2. External MySQL (For Tsugi)
 
 ## Searching
