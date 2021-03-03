@@ -144,6 +144,25 @@ small = 3VMs @ 2CPUs, 1TB disk
 
 ## Diagrams
 
+Diagram 0:
+
+----------------------------------
+CurrikiStudio
+
+	React
+	Api
+	Admin
+	LRS
+	LTI
+----------------------------------
+
+----------------------------------
+Databases
+	Postgres
+	MYSQL
+	Elastic Search
+----------------------------------
+
 
 Diagram 1:
 
