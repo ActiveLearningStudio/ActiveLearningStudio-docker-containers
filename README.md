@@ -31,7 +31,7 @@ Our Minimal Infrastructure is composed of 3 Linux VMs. All are running docker co
 
 # Purpose
 
-The purpose of this repository is to enable users run CurrikiStudio Application on first VM and install through docker-compose
+The purpose of this repository is to enable users run CurrikiStudio Application on VM1 and install through docker-compose
 
 # Minimum Requirements
 1. 8GB RAM
