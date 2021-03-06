@@ -34,7 +34,7 @@ services:
     
   currikiprod-api:
     build:
-      dockerfile: ./api/Dockerfile.dev
+      dockerfile: ./Dockerfile.dev
       context: .
     container_name: currikiprod-api
     ports:
@@ -52,7 +52,7 @@ services:
 
   currikiprod-admin:
     build:
-      dockerfile: ./admin/Dockerfile.dev
+      dockerfile: ./Dockerfile.admin
       context: .
     container_name: currikiprod-admin
     ports:
@@ -67,8 +67,8 @@ services:
 
   currikiprod-client:
     build:
-      dockerfile: Dockerfile.prod
-      context: ./client
+      dockerfile: ./Dockerfile.client
+      context: .
     container_name: currikiprod-client
     volumes:
       - /app/build
@@ -80,7 +80,7 @@ services:
 
   currikiprod-trax:
     build:
-      dockerfile: ./trax-lrs/Dockerfile.dev
+      dockerfile: ./Dockerfile.trax
       context: .
     container_name: currikiprod-trax
     ports:
@@ -96,7 +96,7 @@ services:
 
   currikiprod-tsugi:
     build:
-      dockerfile: ./tsugi/Dockerfile.dev
+      dockerfile: ./Dockerfile.tsugi
       context: .
     container_name: currikiprod-tsugi
     ports:
