@@ -34,7 +34,7 @@ services:
     
   currikiprod-api:
     build:
-      dockerfile: ./Dockerfile.dev
+      dockerfile: ./Dockerfile.api
       context: .
     container_name: currikiprod-api
     ports:
