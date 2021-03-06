@@ -41,6 +41,7 @@ services:
       - ${LARAVEL_API_LOCAL_PORT}:8000
       - 4003:4003
     volumes:
+      - /var/www/html/entrypoint.api.sh
       - /var/www/html/vendor
       - ./api:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
