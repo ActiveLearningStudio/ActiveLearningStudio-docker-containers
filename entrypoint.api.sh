@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # service apache2 restart &
-php /var/www/html/artisan passport install
+php /var/www/html/artisan passport:install
 service cron start &
 redis-server &
 laravel-echo-server start --force &
