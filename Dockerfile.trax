@@ -44,7 +44,9 @@ RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
 
 WORKDIR /var/www/html
 
-
+COPY ./trax-lrs ./
+RUN composer install --no-dev --prefer-dist --optimize-autoloader && \
+    composer clear-cache
 
 # Copy the PHP configuration file
 COPY ./php.ini /usr/local/etc/php/
