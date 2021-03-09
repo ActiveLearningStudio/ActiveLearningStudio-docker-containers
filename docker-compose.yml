@@ -87,6 +87,7 @@ services:
     ports:
       - 6900:6900
     volumes:
+      - /var/www/html/vendor
       - ./trax-lrs:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
       - ./data/certbot/conf:/etc/letsencrypt
