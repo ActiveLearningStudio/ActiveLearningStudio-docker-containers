@@ -48,6 +48,5 @@ COPY ./php.ini /usr/local/etc/php/
 
 
 COPY ./admin ./
-RUN composer install --no-dev --prefer-dist --optimize-autoloader && \
-    composer clear-cache
+RUN composer install
 
