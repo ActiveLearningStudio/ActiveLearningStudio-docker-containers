@@ -42,7 +42,6 @@ services:
       - 4003:4003
     volumes:
       - ./entrypoint.api.sh:/var/www/html/entrypoint.api.sh
-      - /var/www/html/vendor
       - ./api:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
       - ./data/certbot/conf:/etc/letsencrypt
@@ -59,7 +58,6 @@ services:
     ports:
       - ${LARAVEL_ADMIN_LOCAL_PORT}:6000
     volumes:
-      - /var/www/html/vendor
       - ./admin:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
     restart: always
@@ -87,7 +85,6 @@ services:
     ports:
       - 6900:6900
     volumes:
-      - /var/www/html/vendor
       - ./trax-lrs:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
       - ./data/certbot/conf:/etc/letsencrypt
