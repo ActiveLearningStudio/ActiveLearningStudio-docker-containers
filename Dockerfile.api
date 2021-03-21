@@ -84,7 +84,8 @@ RUN touch /var/log/cron.log
 
 
 COPY ./api ./
-RUN composer install
+RUN composer install --no-dev --prefer-dist --optimize-autoloader && \
+    composer clear-cache
 
 
 # USER root
