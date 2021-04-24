@@ -1,5 +1,5 @@
 {
-	"authHost": "https://substitute-frontend-url/",
+	"authHost": "https://substitute-terraform-domain.com/",
 	"authEndpoint": "/api/api/broadcasting/auth",
 	"clients": [],
 	"database": "redis",
@@ -15,8 +15,8 @@
 	"protocol": "https",
 	"socketio": {},
 	"secureOptions": 67108864,
-	"sslCertPath": "/etc/letsencrypt/live/substitute-frontend-url/cert.pem",
-	"sslKeyPath": "/etc/letsencrypt/live/substitute-frontend-url/privkey.pem",
+	"sslCertPath": "/etc/letsencrypt/live/substitute-terraform-domain.com/cert.pem",
+	"sslKeyPath": "/etc/letsencrypt/live/substitute-terraform-domain.com/privkey.pem",
 	"sslCertChainPath": "",
 	"sslPassphrase": "",
 	"subscribers": {

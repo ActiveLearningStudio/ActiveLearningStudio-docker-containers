@@ -89,6 +89,9 @@ find ./ -type f -exec sed -i -e 's/substitute-mysql-db-password/'$substitute_mys
 
 cp ./client/.env.example ./client/.env.local
 cp ./api/.env.example ./api/.env
+cp ./api/laravel-echo-server-https-example.json ./api/laravel-echo-server.json
 cp ./admin/.env.example ./admin/.env
 cp ./trax-lrs/.env.example ./trax-lrs/.env
+cp ./tsugi/tsugi-main-config.example.php  ./tsugi/config.php
+cp ./tsugi/mod/curriki/tsugi-curriki-config.php  ./tsugi/mod/curriki/config.php
 
