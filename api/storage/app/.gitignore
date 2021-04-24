@@ -1,0 +1,7 @@
+*
+!apidoc/
+!public/projects/
+!public/activities/
+!public/activity-items/
+!public/activity-types/
+!.gitignore
