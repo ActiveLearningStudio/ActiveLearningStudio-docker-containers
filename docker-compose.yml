@@ -39,6 +39,39 @@ services:
     image: quay.io/curriki/api:develop
     ports:
       - 9001:8000
+      # - 4003:4003
+    volumes:
+      - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
+      - ./api/storage:/var/www/html/storage
+      - ./api/.env:/var/www/html/.env
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    restart: always
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8000 || exit 1"]
+  
+  currikiprod-redis:
+    # build:
+    #   dockerfile: ./Dockerfile
+    #   context: ./api
+    container_name: currikiprod-redis
+    image: quay.io/curriki/api:develop
+    ports:
       - 4003:4003
     volumes:
       - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
