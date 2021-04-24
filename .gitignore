@@ -1,8 +1,3 @@
 .env
 /backup
 /data/certbot
-/client
-/api
-/admin
-/trax-lrs
-/tsugi
