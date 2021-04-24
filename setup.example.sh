@@ -91,6 +91,4 @@ cp ./client/.env.example ./client/.env.local
 cp ./api/.env.example ./api/.env
 cp ./admin/.env.example ./admin/.env
 cp ./trax-lrs/.env.example ./trax-lrs/.env
-cp ./tsugi/tsugi-main-config.example.php  ./tsugi/config.php
-cp ./tsugi/mod/curriki/tsugi-curriki-config.php  ./tsugi/mod/curriki/config.php
 
