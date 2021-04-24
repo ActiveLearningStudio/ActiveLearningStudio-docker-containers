@@ -1,2 +1,2 @@
 <?php
-define('CURRIKI_STUDIO_HOST', 'substitute-curriki-studio-host');
+define('CURRIKI_STUDIO_HOST', 'substitute-terraform-domain.com');
