@@ -2,6 +2,8 @@
 
 CurrikiStudio enables you to create interactive learning content and publish them anywhere like Google Classroom, LMSs etc
 
+    docker stack deploy --compose-file docker-compose.yml currikistack
+
 # Components
 
 ## Applications
