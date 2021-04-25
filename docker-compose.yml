@@ -62,8 +62,12 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost:8000 || exit 1"]
+    healthcheck:
+      test: sh -c "[ -f /var/www/html/health.ok ]"
+      interval: 1m
+      timeout: 3s
+      start_period: 3m
+      retries: 3
   
   currikiprod-redis:
     # build:
@@ -95,8 +99,12 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost:8000 || exit 1"]
+    healthcheck:
+      test: sh -c "[ -f /var/www/html/health.ok ]"
+      interval: 1m
+      timeout: 3s
+      start_period: 3m
+      retries: 3
 
   currikiprod-admin:
     # build:
@@ -137,8 +145,12 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
-    # healthcheck:
-    #   test: ["CMD", "node", "/app/healthcheck.js || exit 1"]
+    healthcheck:
+      test: sh -c "[ -f /app/health.ok ]"
+      interval: 2m
+      timeout: 3s
+      start_period: 3m
+      retries: 3
 
   currikiprod-trax:
     # build:
