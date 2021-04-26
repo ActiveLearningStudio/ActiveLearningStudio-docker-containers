@@ -74,7 +74,7 @@ services:
     #   dockerfile: ./Dockerfile
     #   context: ./api
     container_name: currikiprod-redis
-    image: quay.io/curriki/api:develop
+    image: quay.io/curriki/redis:develop
     ports:
       - 4003:4003
     volumes:
