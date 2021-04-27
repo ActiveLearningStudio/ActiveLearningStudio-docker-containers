@@ -12,7 +12,7 @@
 	"devMode": true,
 	"host": null,
 	"port": "4003",
-	"protocol": "https",
+	"protocol": "substitute-http-scheme",
 	"socketio": {},
 	"secureOptions": 67108864,
 	"sslCertPath": "/etc/letsencrypt/live/substitute-terraform-domain.com/cert.pem",
