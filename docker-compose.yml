@@ -178,12 +178,12 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
-    healthcheck:
-      test: sh -c "[ -f /app/health.ok ]"
-      interval: 2m
-      timeout: 3s
-      start_period: 3m
-      retries: 3
+    # healthcheck:
+    #   test: sh -c "[ -f /app/health.ok ]"
+    #   interval: 2m
+    #   timeout: 3s
+    #   start_period: 3m
+    #   retries: 3
 
   currikiprod-trax:
     build:
