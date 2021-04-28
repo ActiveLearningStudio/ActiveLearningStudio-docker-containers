@@ -120,9 +120,9 @@ services:
     restart: always 
 
   currikiprod-client:
-    build:
-      dockerfile: ./Dockerfile
-      context: ./client
+    # build:
+    #   dockerfile: ./Dockerfile
+    #   context: ./client
     image: quay.io/curriki/client:develop
     container_name: currikiprod-client
     volumes:
@@ -153,9 +153,9 @@ services:
       retries: 3
 
   currikiprod-trax:
-    # build:
-    #   dockerfile: ./Dockerfile
-    #   context: ./trax-lrs
+    build:
+      dockerfile: ./Dockerfile
+      context: ./trax-lrs
     image: quay.io/curriki/trax:latest
     container_name: currikiprod-trax
     ports:
@@ -180,11 +180,17 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
+    healthcheck:
+      test: sh -c "[ -f /var/www/html/health.ok ]"
+      interval: 2m
+      timeout: 3s
+      start_period: 1m
+      retries: 3
 
   currikiprod-tsugi:
-    # build:
-    #   dockerfile: ./Dockerfile
-    #   context: ./tsugi
+    build:
+      dockerfile: ./Dockerfile
+      context: ./tsugi
     image: quay.io/curriki/tsugi:latest
     container_name: currikiprod-tsugi
     ports:
@@ -210,3 +216,9 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
+    healthcheck:
+      test: sh -c "[ -f /var/www/html/tsugi/health.ok ]"
+      interval: 2m
+      timeout: 3s
+      start_period: 1m
+      retries: 3
