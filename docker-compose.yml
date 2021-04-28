@@ -161,6 +161,7 @@ services:
     ports:
       - 6900:6900
     volumes:
+      - ./trax-lrs/storage:/var/www/html/storage
       - ./trax-lrs/.env:/var/www/html/.env
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
