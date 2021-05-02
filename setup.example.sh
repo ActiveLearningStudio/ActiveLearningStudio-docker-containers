@@ -29,6 +29,7 @@ substitute_gapi_credentials="curriki_gapi_credentials"
 substitute_gapi_client_id="curriki_gapi_client_id"
 substitute_elastic_host="curriki_elastic_host"
 substitute_elastic_user="curriki_elastic_user"
+substitute_es_port="curriki_es_port"
 substitute_elastic_password="curriki_elastic_password"
 substitute_lrs_username="curriki_lrs_username"
 substitute_lrs_password="curriki_lrs_password"
@@ -78,6 +79,7 @@ find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*
 find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*'   \) ! -path "./setup.sh" -exec sed -i -e 's/substitute-elastic-host/'$substitute_elastic_host'/g' {} \;
 find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*'   \) ! -path "./setup.sh" -exec sed -i -e 's/substitute-elastic-user/'$substitute_elastic_user'/g' {} \;
 find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*'   \) ! -path "./setup.sh" -exec sed -i -e 's/substitute-elastic-password/'$substitute_elastic_password'/g' {} \;
+find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*'   \) ! -path "./setup.sh" -exec sed -i -e 's/substitute-es-port/'$substitute_es_port'/g' {} \;
 find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*'   \) ! -path "./setup.sh" -exec sed -i -e 's/substitute-lrs-username/'$substitute_lrs_username'/g' {} \;
 find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*'   \) ! -path "./setup.sh" -exec sed -i -e 's/substitute-lrs-password/'$substitute_lrs_password'/g' {} \;
 find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*'   \) ! -path "./setup.sh" -exec sed -i -e 's/substitute-lrs-db-database/'$substitute_lrs_db_database'/g' {} \;
