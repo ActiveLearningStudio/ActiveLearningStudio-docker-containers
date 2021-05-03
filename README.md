@@ -63,7 +63,7 @@ Run following commands
 	sudo mkdir -p /mnt/DBData/pgadmin1-data
 	sudo docker-compose up -d
 
-## Database VM
+## Elastic VM
 
 Currently elastic search is manual installation so you should following internet according to your environment
 
