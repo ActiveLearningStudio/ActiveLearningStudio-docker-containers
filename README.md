@@ -2,11 +2,13 @@
 
 CurrikiStudio enables you to create interactive learning content and publish them anywhere like Google Classroom, LMSs etc
 
-    docker stack deploy --compose-file docker-compose.yml currikistack
+
 
 # Components
 
 ## Applications
+
+Following applications are the part of CurrikiStudio
 
 1. [React Frontend application](https://github.com/ActiveLearningStudio/ActiveLearningStudio-react-client)
 2. [Backend API](https://github.com/ActiveLearningStudio/ActiveLearningStudio-API)
@@ -31,166 +33,76 @@ Our Minimal Infrastructure is composed of 3 Linux VMs. All are running docker co
 2. VM2: Databases: Postgres + MySQL
 3. VM3: Elastic Search
 
-# Purpose
+# Deployment of VM1 (Application)
 
-The purpose of this repository is to enable users run CurrikiStudio Application on VM1 and install through docker-compose
 
 # Minimum Requirements
 1. 8GB RAM
 2. 2 VCPUs
-3. Tried on Ubuntu, Amaozon Linux, Oracle Linux. This list can grow after testing
+3. Tried on Ubuntu, Amaozon Linux, Oracle Linux. This list will grow after testing
 
 # Pre-Requisites
 
-1. You should have [docker-compose](https://docs.docker.com/compose/install/) installed on your Linux VM
-2. Docker version 19 or above
-3. Route 53 entries of site, admin, trax, tsugi
+
+1. Docker version 19 or above
+
 
 # Installation
 
-## Create DNS record
+## Database VM
 
-Create entries in route 53 or any of the hosted zone in which site is added. Enteries can be like the following
+Install [docker compose](https://docs.docker.com/compose/install/)
 
-1. demo.currikistudio.org
-2. demo-admin.currikistudio.org
-3. demo-tsugi.currikistudio.org
-4. demo-trax.currikistudio.org
+Run following commands
 
-These entries are required because of lets-encrypt ssl generation
+    git clone https://github.com/ActiveLearningStudio/ActiveLearningStudio-docker-db.git curriki-db
+	cd curriki-db
+	cp .env.example .env
+	sudo mkdir -p /mnt/DBData/currikiprod1-mysqldata
+	sudo mkdir -p /mnt/DBData/currikiprod1-mysqldata
+	sudo mkdir -p /mnt/DBData/pgadmin1-data
+	sudo docker-compose up -d
 
-## Clone Main Repo
+## Database VM
 
-> git clone https://github.com/ActiveLearningStudio/ActiveLearningStudio-docker-containers.git
+Currently elastic search is manual installation so you should following internet according to your environment
 
-> cd ActiveLearningStudio-docker-containers
- 
-## SSL Setup with Lets encrypt
-1. In `init-letsencrypt.sh ` update the domains according to your settings
-2. In `data/nginx/certbot-conf/app.conf`, update the domains according to your settings
-3. In `data/nginx/prod-conf/app.conf`, update the domains according to your settings
-4. Run `./init-letsencrypt` from root folder to generate certificates. This might require sudo rights
+### For Ubuntu 
+[https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-18-04](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-18-04)
 
-## Repos cloning and configurations
+### For CentOS 7
 
-Once ssl is generated, it is time to configure and run the applications
+[https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-centos-7](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-centos-7)
 
-1. Clone the repos mentioned in the `Components` section of the project, inside the root of this project
-```
-git clone https://github.com/ActiveLearningStudio/ActiveLearningStudio-react-client client
-git clone https://github.com/ActiveLearningStudio/ActiveLearningStudio-API api
-git clone https://github.com/ActiveLearningStudio/ActiveLearningStudio-admin-panel admin
-git clone https://github.com/tsugiproject/tsugi
-git clone https://github.com/trax-project/trax-lrs
-```
-2. Copy .env.example to .env and change variables accordingly
-3. Inside api folder copy .env.example to .env and change env variables accordingly
-4. Inside client folder create .env.local and add env variables (Further TODO)
-5. Inside admin folder copy .env.example to .env and change env varialbes accordingly
-6. Inside tsugi folder update config.php database configurations
-7. Inside trax-lrs folder copy .env.example to .env and change env varialbes accordingly
+## Application VM
 
+### Add DNS records
 
-## Running application
+1. Copy public ip of the VM and put inside the DNS records like this.
 
-J. Run following commands to create the application
+Say public ip of your VM is 132.226.36.47
 
-> docker-compose up -d
+You must create these A records like
 
-It will take almost 40 minutes to run the containers. When the containers are up you will be able to see CurrikiStudio on your provided entry of Route53 (demo.currikistudio.org in our case)
+    example.currikistudio.org 132.226.36.47
+	example-admin.currikistudio.org 132.226.36.47
+	example-tsugi.currikistudio.org 132.226.36.47
+	example-trax.currikistudio.org 132.226.36.47
 
+This step is necessary to generate letsencrypt certificate which will be discussed later in this section
 
-# Assumptions
+### Clone Main Repo into some folder
 
-This installation assumes that you have external postgres and mysql databases setup and those credentials are being used in the environments of the project
+    git clone https://github.com/ActiveLearningStudio/ActiveLearningStudio-docker-containers.git curriki
+	cd curriki
 
-# TODO
+Change the values of setup.example.sh variables and run it (The purpose of the setup.example.sh file is to replace all the configuration variables inside the application according to your environment)
+	
+	sudo ./setup.example.sh
+	sudo docker swarm init
+	sudo ./init-letsencrypt.sh
 
-1. API Storage Setup
-2. Database setups
+init-letsencrypt.sh will generate a certificate and attach to your installation
 
-
-# OCI Implementation Marketplace
-
-Instance + External Volume (Block Storage)
-
-Configurations
-
-Terraform script will get the image, configure the instance and run the application
-
-There will be three images
-- CurrikiStudio
-- Image for database (Postgres + MySQL)
-
-
-
-Diagram
-
-CurrikiStudio
- ---------------------------
-| 		Application			|
-| 		Database			|
-| 		Elastic Search		|
- ---------------------------
- 
-We can resize them in - small, medium large
-
-
-small = 3VMs @ 2CPUs, 1TB disk
-
-1. We fetch up these images, and spin them up
-
-2. Configurations: And once that is done we can take the user to some URL (say currikistudio.org/oci/setup) for configurations, like mail settings, Domain names onto which installation will point (demo.currikistudio.org) etc
-3. Once that is complete. User will be able to use currikistudio on the provided domain
-
-
-## Diagrams
-
-Diagram 0:
-
-----------------------------------
-CurrikiStudio
-
-	React
-	Api
-	Admin
-	LRS
-	LTI
-----------------------------------
-
-----------------------------------
-Databases
-	Postgres
-	MYSQL
-	Elastic Search
-----------------------------------
-
-
-Diagram 1:
-
-VM1 (Running Oracle enterprise linux with this shape (mention shape)) + Attached Volume  =====> Running CurrikiStudio Application
-
-(down arrow)
-
-- VM2 (Running Oracle enterprise linux with this shape (mention shape)) + Attached Volume  =====> Running CurrikiStudio Database
-- VM3 (Running Oracle enterprise linux with this shape (mention shape)) + Attached Volume  =====> Running Elastic Search
-
-
-Once we will fetch these images
-- It will create a standard file system + database on these instances
-
-
-Diagram 2:
-
-Show the form for configurations
-
-- Main Site URL
-- Admin Site URL
-- LTI Site URL
-- LRS Site URL
-- SMTP Creds (Need to configure outside the system)
-- Hubspot integration id (Need to configure outside the system)
-- Pexel api (Need to configure outside the system)
-
-Once that is submitted. It will update necessary configurations in the VMs and user will be able to see application on Main Site URL
+Once this is run succesfully without errors your studio applicaiton will be on https://example.currikistudio.org
 
