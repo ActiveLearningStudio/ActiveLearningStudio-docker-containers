@@ -59,7 +59,7 @@ Run following commands
 	cd curriki-db
 	cp .env.example .env
 	sudo mkdir -p /mnt/DBData/currikiprod1-mysqldata
-	sudo mkdir -p /mnt/DBData/currikiprod1-mysqldata
+	sudo mkdir -p /mnt/DBData/currikiprod1-postgresdata
 	sudo mkdir -p /mnt/DBData/pgadmin1-data
 	sudo docker-compose up -d
 
