@@ -98,10 +98,7 @@ services:
         parallelism: 0
         order: stop-first
       restart_policy:
-        condition: any
-        delay: 5s
-        max_attempts: 3
-        window: 120s
+        condition: none
     # healthcheck:
     #   test: sh -c "[ -f /var/www/html/health.ok ]"
     #   interval: 1m
