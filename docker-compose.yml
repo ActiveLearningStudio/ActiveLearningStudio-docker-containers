@@ -84,6 +84,7 @@ services:
       - ./api/.env:/var/www/html/.env
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
+      - ./api/migrate.done:/var/www/html/migrate.done
     restart: none
     depends_on:
       - currikiprod-api
