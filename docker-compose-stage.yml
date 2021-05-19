@@ -36,7 +36,7 @@ services:
     #   dockerfile: ./Dockerfile
     #   context: ./api
     container_name: currikiprod-api
-    image: quay.io/curriki/api:stage
+    image: quay.io/curriki/api:latest
     ports:
       - 9001:8000
       # - 4003:4003
@@ -74,7 +74,7 @@ services:
     #   dockerfile: ./Dockerfile
     #   context: ./api
     container_name: currikiprod-es-migrate
-    image: quay.io/curriki/es-migrate:stage
+    image: quay.io/curriki/es-migrate:latest
     ports:
       - 9070:8000
       # - 4003:4003
@@ -111,7 +111,7 @@ services:
     #   dockerfile: ./Dockerfile
     #   context: ./api
     container_name: currikiprod-redis
-    image: quay.io/curriki/redis:stage
+    image: quay.io/curriki/redis:latest
     ports:
       - 4003:4003
     volumes:
@@ -147,7 +147,7 @@ services:
     # build:
     #   dockerfile: ./Dockerfile
     #   context: ./admin
-    image: quay.io/curriki/admin:stage
+    image: quay.io/curriki/admin:latest
     container_name: currikiprod-admin
     ports:
       - 6001:6000
@@ -160,7 +160,7 @@ services:
     # build:
     #   dockerfile: ./Dockerfile
     #   context: ./client
-    image: quay.io/curriki/client:stage
+    image: quay.io/curriki/client:latest
     container_name: currikiprod-client
     volumes:
       - ./client/.env.local:/app/.env.local
