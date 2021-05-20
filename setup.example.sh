@@ -8,7 +8,6 @@ main_site="terraform_site"
 admin_site="terraform_admin_site"
 tsugi_site="terraform_tsugi_site"
 trax_site="terraform_trax_site"
-http_terraform_scheme="http_scheme"
 substitute_app_pexel_api="react_app_pexel_api"
 substitute_app_google_captcha="react_app_google_captcha"
 substitute_app_gapi_client_id="react_app_gapi_client_id"
@@ -54,7 +53,6 @@ find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*
 find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*'   \) ! -path "./setup.sh" -exec sed -i -e 's/substitute-terraform-tsugi-domain.com/'$tsugi_site'/g' {} \;
 find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*'   \) ! -path "./setup.sh" -exec sed -i -e 's/substitute-terraform-trax-domain.com/'$trax_site'/g' {} \;
 
-find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*'   \) ! -path "./setup.sh" -exec sed -i -e 's/substitute-http-scheme/'$http_terraform_scheme'/g' {} \;
 #Client
 find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*'   \) ! -path "./setup.sh" -exec sed -i -e 's/substitute-react-app-pexel-api/'$substitute_app_pexel_api'/g' {} \;
 find ./ -type f -not \( -path './api/storage/*' -o -path './api/storagetoclone/*'   \) ! -path "./setup.sh" -exec sed -i -e 's/substitute-react-app-google-captcha/'$substitute_app_google_captcha'/g' {} \;
