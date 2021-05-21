@@ -16,12 +16,7 @@ register_shutdown_function('__the_end');
 
 // If this file is symbolically linked you'll need to manually define the absolute path,
 // otherwise this will resolve incorrectly.
-
 $dirroot = realpath(dirname(__FILE__));
-
-// New for 2021 - We may need to do some tweaking before the autoloader wakes up
-// So we need to add this to front of config.php
-require_once $dirroot."/vendor/tsugi/lib/include/pre_config.php";
 
 $loader = require_once($dirroot."/vendor/autoload.php");
 
@@ -31,13 +26,14 @@ $apphome = false;
 // $apphome = "http://localhost:8888/tsugi-org";
 
 // Set the path to the Tsugi folder without a trailing slash
-if ( $apphome ) {
-    $wwwroot = $apphome . '/tsugi';
-} else if ( U::get($_SERVER,'SERVER_PORT') == 8888 ) {
-    $wwwroot = 'http://localhost:8888/tsugi'; // Mac XAMP
-} else {
-    $wwwroot = "http://substitute-terraform-tsugi-domain.com";
-}
+// if ( $apphome ) {
+//     $wwwroot = $apphome . '/tsugi';
+// } else if ( U::get($_SERVER,'SERVER_PORT') == 8888 ) {
+//     $wwwroot = 'http://localhost:8888/tsugi'; // Mac XAMP
+// } else {
+//     $wwwroot = "http://localhost/tsugi";
+// }
+$wwwroot = "http://substitute-terraform-tsugi-domain.com";
 // Once you are on a real server delete the above if statement
 // and set the wwwroot directly.  This must be the actual URL used
 // on the Internet for LTI signatures to compute correctly
@@ -176,13 +172,8 @@ if ( isset($CFG->apphome) ) {
 $CFG->upgrading = false;
 
 // This is how the system will refer to itself.
-$CFG->servicename = 'CurrikiGo';
+$CFG->servicename = 'TSUGI';
 $CFG->servicedesc = false;
-
-// If the launch experiences an error and there is not return_url in the launch, the user
-// is sent to this URL with a detail= parameter
-// $CFG->launcherror = "https://www.tsugi.org/launcherror";
-// $CFG->launcherror = $CFG->apphome . "/launcherror";
 
 // Define the default language for the site
 $CFG->lang='en';
@@ -197,8 +188,8 @@ $CFG->autoapprovekeys = false; // A regex like - '/.+@gmail\\.com/'
 // Go to https://console.developers.google.com/apis/credentials
 // create a new OAuth 2.0 credential for a web application,
 // get the key and secret, and put them here:
-$CFG->google_client_id = '';//'898143939834-9ioui2i9ghgrmcgmgtg0h6rsf83d0t0c.apps.googleusercontent.com'; // '96041-nljpjj8jlv4.apps.googleusercontent.com';
-$CFG->google_client_secret = '';//'mCIpvHBXrCj7wfjtvTHhy09g'; // '6Q7w_x4ESrl29a';
+$CFG->google_client_id = false; // '96041-nljpjj8jlv4.apps.googleusercontent.com';
+$CFG->google_client_secret = false; // '6Q7w_x4ESrl29a';
 
 // This is a legacy backwards compatibility.   In the round-trip to Google it used to
 // come back login.php after login was successful - If this is true, we come back
@@ -212,13 +203,6 @@ $CFG->logout_return_url = false;
 // Defaults to $CFG->apphome if defined and $CFG->wwwroot if that is not defined or false
 $CFG->login_return_url = false;
 
-// You can specify a default menu for Tsugi to use across the site if there is no
-// defined menu given
-// $buildmenu = $CFG->dirroot."/../buildmenu.php";
-// if ( file_exists($buildmenu) ) {
-    // require_once $buildmenu;
-    // $CFG->defaultmenu = buildMenu();
-// }
 
 // If these are not set, the auto expiration scripts in admin/expire
 // do nothing.  You can still manually expire data in the admin UI without
@@ -237,7 +221,7 @@ $CFG->login_return_url = false;
 // Set the secret to a long random string - this is used for internal
 // url Tsugi signing - not for Google interactions.  Don't change it
 // once you set it.
-$CFG->google_classroom_secret = 'XYZoLKJHi....jkhgJGHJGH';
+// $CFG->google_classroom_secret = 'oLKJHi....jkhgJGHJGH';
 
 // This should be an absolute URL that will be used to generate previews
 // in Google Classroom
@@ -414,14 +398,6 @@ $CFG->prefer_lti1_for_grade_send = true;
 // This of course is something to consider carefully.
 // $CFG->git_command = '/home/csev/git';
 
-// By default tools and tusgi are auto-upgraded to the master branch,
-// but you can override this on a repo by repo basis in the following
-// array - if you remove an entry from this array the next auto-update
-// will switch back to master.
-$CFG->branch_override = array(
-    // "https://github.com/tsugiproject/tsugi.git" => "beta",
-);
-
 // Should we record launch activity - multi-bucket lossy historgram
 $CFG->launchactivity = true;
 
@@ -450,8 +426,6 @@ if ( isset($CFG->memcached) && strlen($CFG->memcached) > 0 ) {
     ini_set('session.save_path', $CFG->memcached);
     // https://github.com/php-memcached-dev/php-memcached/issues/269
     ini_set('memcached.sess_locking', '0');
-    ini_set('memcached.serializer', 'php');
-    ini_set('session.serialize_handler', 'php_serialize');
 }
 
 // Store sessions in a database -  Keep this false until the DB upgrade
@@ -471,6 +445,40 @@ if ( isset($CFG->sessions_in_db) && $CFG->sessions_in_db ) {
     );
 }
 
+// Storing Sessions in DynamoDB - Beta
+// http://docs.aws.amazon.com/aws-sdk-php/v2/guide/feature-dynamodb-session-handler.html
+// $CFG->dynamodb_key = 'AKIISDIUSDOUISDHFBUQ';
+// $CFG->dynamodb_secret = 'zFKsdkjhkjskhjSAKJHsakjhSAKJHakjhdsasYaZ';
+// $CFG->dynamodb_region = 'us-east-2';
+
+if ( isset($CFG->dynamodb_key) && isset($CFG->dynamodb_secret) && isset($CFG->dynamodb_region) &&
+     strlen($CFG->dynamodb_key) > 0 && strlen($CFG->dynamodb_secret) > 0 &&
+     strlen($CFG->dynamodb_region) > 0 ) {
+    $CFG->sessions_in_dynamodb = true;
+    if ( $CFG->sessions_in_dynamodb ) {
+        $dynamoDb = \Aws\DynamoDb\DynamoDbClient::factory(
+            array('region' => $CFG->dynamodb_region,
+            'credentials' => array(
+                'key'    => $CFG->dynamodb_key,
+                'secret' => $CFG->dynamodb_secret
+            ),
+            'version' => 'latest'));
+        $sessionHandler = $dynamoDb->registerSessionHandler(array(
+            'table_name'               => 'sessions',
+            'hash_key'                 => 'id',
+            'session_lifetime'         => 3600,
+            'consistent_read'          => true,
+            'locking_strategy'         => null,
+            'automatic_gc'             => 0,
+            'gc_batch_size'            => 50,
+            'max_lock_wait_time'       => 15,
+            'min_lock_retry_microtime' => 5000,
+            'max_lock_retry_microtime' => 50000,
+        ));
+    }
+}
+
+
 if ( isset($CFG->apphome) && $CFG->apphome ) {
     $tsugi_settings = $CFG->dirroot."/../tsugi_settings.php";
     if ( file_exists($tsugi_settings) ) {
@@ -483,8 +491,6 @@ if ( isset($CFG->apphome) && $CFG->apphome ) {
 $CFG->vendorroot = $CFG->wwwroot."/vendor/tsugi/lib/util";
 $CFG->vendorinclude = $CFG->dirroot."/vendor/tsugi/lib/include";
 $CFG->vendorstatic = $CFG->wwwroot."/vendor/tsugi/lib/static";
-
-$CFG->lumen_storage = $CFG->dirroot."/storage/";
 
 // Leave these here
 require_once $CFG->vendorinclude."/setup.php";
