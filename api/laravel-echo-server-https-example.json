@@ -1,5 +1,5 @@
 {
-	"authHost": "https://substitute-terraform-domain.com/",
+	"authHost": "http://substitute-terraform-domain.com/",
 	"authEndpoint": "/api/api/broadcasting/auth",
 	"clients": [],
 	"database": "redis",
@@ -12,7 +12,7 @@
 	"devMode": true,
 	"host": null,
 	"port": "4003",
-	"protocol": "substitute-http-scheme",
+	"protocol": "http",
 	"socketio": {},
 	"secureOptions": 67108864,
 	"sslCertPath": "/etc/letsencrypt/live/substitute-terraform-domain.com/cert.pem",
