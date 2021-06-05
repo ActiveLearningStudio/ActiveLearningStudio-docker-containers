@@ -1,0 +1,317 @@
+version: "3.7"
+services:
+
+  currikiprod-nginx:
+    image: nginx:1.15-alpine
+    restart: unless-stopped
+    container_name: currikiprod-nginx
+    volumes:
+      - ./data/nginx/prod-conf:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+      - ./data/nginx/log:/var/log/nginx
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - currikiprod-client
+      - currikiprod-api
+      - currikiprod-trax
+      - currikiprod-tsugi
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    
+
+    
+  currikiprod-api:
+    # build:
+    #   dockerfile: ./Dockerfile
+    #   context: ./api
+    container_name: currikiprod-api
+    image: quay.io/curriki/api:latest
+    ports:
+      - 9001:8000
+      # - 4003:4003
+    volumes:
+      - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
+      - ./api/storage:/var/www/html/storage
+      - ./api/.env:/var/www/html/.env
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    restart: always
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: sh -c "[ -f /var/www/html/health.ok ]"
+      interval: 1m
+      timeout: 3s
+      start_period: 3m
+      retries: 3
+
+  currikiprod-es-migrate:
+    # build:
+    #   dockerfile: ./Dockerfile
+    #   context: ./api
+    container_name: currikiprod-es-migrate
+    image: quay.io/curriki/es-migrate:latest
+    ports:
+      - 9070:8000
+      # - 4003:4003
+    volumes:
+      - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
+      - ./api/storage:/var/www/html/storage
+      - ./api/.env:/var/www/html/.env
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+      - ./api/migrate.done:/var/www/html/migrate.done
+    restart: none
+    depends_on:
+      - currikiprod-api
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: none
+    healthcheck:
+      test: sh -c "[ -f /var/www/html/health.ok ]"
+      interval: 1m
+      timeout: 3s
+      start_period: 3m
+      retries: 3
+  
+  currikiprod-redis:
+    # build:
+    #   dockerfile: ./Dockerfile
+    #   context: ./api
+    container_name: currikiprod-redis
+    image: quay.io/curriki/redis:latest
+    ports:
+      - 4003:4003
+    volumes:
+      - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
+      - ./api/storage:/var/www/html/storage
+      - ./api/.env:/var/www/html/.env
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: sh -c "[ -f /var/www/html/health.ok ]"
+      interval: 1m
+      timeout: 3s
+      start_period: 3m
+      retries: 3
+
+  currikiprod-admin:
+    # build:
+    #   dockerfile: ./Dockerfile
+    #   context: ./admin
+    image: quay.io/curriki/admin:latest
+    container_name: currikiprod-admin
+    ports:
+      - 6001:6000
+    volumes:
+      - ./admin/storage:/var/www/html/storage
+      - ./admin/.env:/var/www/html/.env
+    restart: always 
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: sh -c "[ -f /var/www/html/health.ok ]"
+      interval: 1m
+      timeout: 3s
+      start_period: 3m
+      retries: 3
+
+  currikiprod-client:
+    # build:
+    #   dockerfile: ./Dockerfile
+    #   context: ./client
+    image: quay.io/curriki/client:shepherds
+    container_name: currikiprod-client
+    volumes:
+      - ./client/.env.local:/app/.env.local
+    restart: always
+    ports:
+      - 3000:3000
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: sh -c "[ -f /app/health.ok ]"
+      interval: 2m
+      timeout: 3s
+      start_period: 3m
+      retries: 3
+
+  currikiprod-clientdocs:
+    # build:
+    #   dockerfile: ./Dockerfile
+    #   context: ./clientdocs
+    image: quay.io/curriki/clientdocs:latest
+    container_name: currikiprod-clientdocs
+    volumes:
+      - ./clientdocs/.env.local:/app/.env.local
+    restart: always
+    ports:
+      - 2000:2000
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    # healthcheck:
+    #   test: sh -c "[ -f /app/health.ok ]"
+    #   interval: 2m
+    #   timeout: 3s
+    #   start_period: 3m
+    #   retries: 3
+
+  currikiprod-trax:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./trax-lrs
+    image: quay.io/curriki/trax:latest
+    container_name: currikiprod-trax
+    ports:
+      - 6900:6900
+    volumes:
+      - ./trax-lrs/storage:/var/www/html/storage
+      - ./trax-lrs/.env:/var/www/html/.env
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: sh -c "[ -f /var/www/html/health.ok ]"
+      interval: 30s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
+
+  currikiprod-tsugi:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./tsugi
+    image: quay.io/curriki/tsugi:latest
+    container_name: currikiprod-tsugi
+    ports:
+      - 6300:6300
+    volumes:
+      - ./tsugi/config.php:/var/www/html/tsugi/config.php
+      - ./tsugi/mod/curriki/config.php:/var/www/html/tsugi/mod/curriki/config.php
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: sh -c "[ -f /var/www/html/tsugi/health.ok ]"
+      interval: 30s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
