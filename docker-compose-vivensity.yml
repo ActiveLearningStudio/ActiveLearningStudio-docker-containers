@@ -182,7 +182,7 @@ services:
     # build:
     #   dockerfile: ./Dockerfile
     #   context: ./client
-    image: quay.io/curriki/client:imsparked
+    image: quay.io/curriki/client:vivensity
     container_name: currikiprod-client
     volumes:
       - ./client/.env.local:/app/.env.local
