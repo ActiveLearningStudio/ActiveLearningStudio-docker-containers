@@ -14,7 +14,7 @@ services:
       - 80:80
       - 443:443
     depends_on:
-      # - currikiprod-client
+      - currikiprod-client
       - currikiprod-api
       # - currikiprod-trax
       # - currikiprod-tsugi
@@ -178,17 +178,17 @@ services:
   #     start_period: 3m
   #     retries: 3
 
-  # currikiprod-client:
-  #   # build:
-  #   #   dockerfile: ./Dockerfile
-  #   #   context: ./client
-  #   image: quay.io/curriki/client:box
-  #   container_name: currikiprod-client
-  #   volumes:
-  #     - ./client/.env.local:/app/.env.local
-  #   restart: always
-  #   ports:
-  #     - 3000:3000
+  currikiprod-client:
+    # build:
+    #   dockerfile: ./Dockerfile
+    #   context: ./client
+    image: quay.io/curriki/client:box
+    container_name: currikiprod-client
+    volumes:
+      - ./client/.env.local:/app/.env.local
+    restart: always
+    ports:
+      - 3000:3000
     # deploy:
     #   replicas: 1
     #   update_config:
