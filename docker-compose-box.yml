@@ -19,6 +19,8 @@ services:
       # - currikiprod-trax
       # - currikiprod-tsugi
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    networks:
+      - currikiprod1-laravel
     
 
   # certbot:
@@ -47,6 +49,8 @@ services:
       # - ./data/certbot/conf:/etc/letsencrypt
       # - ./data/certbot/www:/var/www/certbot
     restart: always
+    networks:
+      - currikiprod1-laravel
     # deploy:
     #   replicas: 2
     #   update_config:
@@ -189,6 +193,8 @@ services:
     restart: always
     ports:
       - 3000:3000
+    networks:
+      - currikiprod1-laravel
     # deploy:
     #   replicas: 1
     #   update_config:
@@ -315,3 +321,7 @@ services:
   #     timeout: 3s
   #     start_period: 10s
   #     retries: 3
+networks:
+  currikiprod1-laravel:
+    name: currikiprod1-laravel
+    external: true
