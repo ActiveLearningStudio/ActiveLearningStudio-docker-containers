@@ -81,33 +81,33 @@ services:
     networks:
       - currikiprod-laravel
       
-  # currikiprod-nginx:
-  #   image: nginx:1.15-alpine
-  #   restart: unless-stopped
-  #   container_name: currikiprod-nginx
-  #   volumes:
-  #     - ./data/nginx/prod-conf:/etc/nginx/conf.d
-  #     - ./data/certbot/conf:/etc/letsencrypt
-  #     - ./data/certbot/www:/var/www/certbot
-  #     - ./data/nginx/log:/var/log/nginx
-  #   ports:
-  #     - 80:80
-  #     - 443:443
-  #   depends_on:
-  #     - currikiprod-client
-  #     - currikiprod-api
-  #     - currikiprod-trax
-  #     - currikiprod-tsugi
-  #   command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  currikiprod-nginx:
+    image: nginx:1.15-alpine
+    restart: unless-stopped
+    container_name: currikiprod-nginx
+    volumes:
+      - ./data/nginx/prod-conf:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+      - ./data/nginx/log:/var/log/nginx
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - currikiprod-client
+      - currikiprod-api
+      # - currikiprod-trax
+      # - currikiprod-tsugi
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     
 
-  # certbot:
-  #   image: certbot/certbot
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./data/certbot/conf:/etc/letsencrypt
-  #     - ./data/certbot/www:/var/www/certbot
-  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     
 
     
@@ -129,6 +129,8 @@ services:
       - ./api:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
     restart: always
+    networks:
+      - currikiprod-laravel
 
 
   # currikiprod-admin:
@@ -145,6 +147,8 @@ services:
   #     - ./admin:/var/www/html
   #     - ./php.ini:/usr/local/etc/php/php.ini
   #   restart: always 
+  #   networks:
+  #     - currikiprod-laravel
 
   currikiprod-client:
     # build:
@@ -158,6 +162,8 @@ services:
     restart: always
     ports:
       - 3000:3000
+    networks:
+      - currikiprod-laravel
 
   # currikiprod-clientdocs:
   #   # build:
@@ -171,6 +177,8 @@ services:
   #   restart: always
   #   ports:
   #     - 2000:2000
+  #   networks:
+  #     - currikiprod-laravel
 
   # currikiprod-trax:
   #   build:
@@ -188,6 +196,8 @@ services:
   #     - ./trax-lrs:/var/www/html
   #     - ./php.ini:/usr/local/etc/php/php.ini
   #   restart: always
+  #   networks:
+  #     - currikiprod-laravel
     
 
   # currikiprod-tsugi:
@@ -206,6 +216,8 @@ services:
   #     - ./tsugi:/var/www/html/tsugi
   #     - ./php.ini:/usr/local/etc/php/php.ini
   #   restart: always
+  #   networks:
+  #     - currikiprod-laravel
 
 volumes: #provide volume
     currikiprod-mysqldata:
@@ -229,5 +241,6 @@ volumes: #provide volume
 
 networks:
   currikiprod-laravel:
+    name: currikiprod-laravel
     driver: bridge
 
