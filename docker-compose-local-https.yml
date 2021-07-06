@@ -146,18 +146,18 @@ services:
   #     - ./php.ini:/usr/local/etc/php/php.ini
   #   restart: always 
 
-  # currikiprod-client:
-  #   # build:
-  #   #   dockerfile: ./Dockerfile
-  #   #   context: ./client
-  #   image: quay.io/curriki/client:latest
-  #   container_name: currikiprod-client
-  #   volumes:
-  #     - ./client/.env.local:/app/.env.local
-  #     - ./client:/app
-  #   restart: always
-  #   ports:
-  #     - 3000:3000
+  currikiprod-client:
+    # build:
+    #   dockerfile: ./Dockerfile
+    #   context: ./client
+    image: quay.io/curriki/client:local
+    container_name: currikiprod-client
+    volumes:
+      - ./client/.env.local:/app/.env.local
+      - ./client:/app
+    restart: always
+    ports:
+      - 3000:3000
 
   # currikiprod-clientdocs:
   #   # build:
