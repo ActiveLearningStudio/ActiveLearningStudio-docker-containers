@@ -1,132 +1,7 @@
 version: "3.7"
 services:
 
-  currikiprod-nginx:
-    image: nginx:1.15-alpine
-    restart: unless-stopped
-    container_name: currikiprod-nginx
-    volumes:
-      - ./data/nginx/prod-conf:/etc/nginx/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-      - ./data/nginx/log:/var/log/nginx
-    ports:
-      - 80:80
-      - 443:443
-    depends_on:
-      - currikiprod-client
-      - currikiprod-api
-      - currikiprod-trax
-      - currikiprod-tsugi
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-    
-
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    
-
-    
-  currikiprod-api:
-    # build:
-    #   dockerfile: ./Dockerfile
-    #   context: ./api
-    container_name: currikiprod-api
-    image: quay.io/curriki/api:latest
-    ports:
-      - 9001:8000
-      # - 4003:4003
-    volumes:
-      - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
-      - ./api/storage:/var/www/html/storage
-      - ./api/.env:/var/www/html/.env
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-      - ./api:/var/www/html
-      - ./php.ini:/usr/local/etc/php/php.ini
-    restart: always
-
-
-  currikiprod-admin:
-    # build:
-    #   dockerfile: ./Dockerfile
-    #   context: ./admin
-    image: quay.io/curriki/admin:latest
-    container_name: currikiprod-admin
-    ports:
-      - 6001:6000
-    volumes:
-      - ./admin/storage:/var/www/html/storage
-      - ./admin/.env:/var/www/html/.env
-      - ./admin:/var/www/html
-      - ./php.ini:/usr/local/etc/php/php.ini
-    restart: always 
-
-  currikiprod-client:
-    # build:
-    #   dockerfile: ./Dockerfile
-    #   context: ./client
-    image: quay.io/curriki/client:latest
-    container_name: currikiprod-client
-    volumes:
-      - ./client/.env.local:/app/.env.local
-      - ./client:/app
-    restart: always
-    ports:
-      - 3000:3000
-
-  currikiprod-clientdocs:
-    # build:
-    #   dockerfile: ./Dockerfile
-    #   context: ./clientdocs
-    image: quay.io/curriki/clientdocs:latest
-    container_name: currikiprod-clientdocs
-    volumes:
-      - ./clientdocs/.env.local:/app/.env.local
-      - ./clientdocs:/app
-    restart: always
-    ports:
-      - 2000:2000
-
-  currikiprod-trax:
-    build:
-      dockerfile: ./Dockerfile
-      context: ./trax-lrs
-    image: quay.io/curriki/trax:latest
-    container_name: currikiprod-trax
-    ports:
-      - 6900:6900
-    volumes:
-      - ./trax-lrs/storage:/var/www/html/storage
-      - ./trax-lrs/.env:/var/www/html/.env
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-      - ./trax-lrs:/var/www/html
-      - ./php.ini:/usr/local/etc/php/php.ini
-    restart: always
-    
-
-  currikiprod-tsugi:
-    build:
-      dockerfile: ./Dockerfile
-      context: ./tsugi
-    image: quay.io/curriki/tsugi:latest
-    container_name: currikiprod-tsugi
-    ports:
-      - 6300:6300
-    volumes:
-      - ./tsugi/config.php:/var/www/html/tsugi/config.php
-      - ./tsugi/mod/curriki/config.php:/var/www/html/tsugi/mod/curriki/config.php
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-      - ./tsugi:/var/www/html/tsugi
-      - ./php.ini:/usr/local/etc/php/php.ini
-    restart: always
-
+  
   currikiprod-postgres:
     image: "postgres"
     container_name: currikiprod-postgres
@@ -206,6 +81,132 @@ services:
     networks:
       - currikiprod-laravel
       
+  # currikiprod-nginx:
+  #   image: nginx:1.15-alpine
+  #   restart: unless-stopped
+  #   container_name: currikiprod-nginx
+  #   volumes:
+  #     - ./data/nginx/prod-conf:/etc/nginx/conf.d
+  #     - ./data/certbot/conf:/etc/letsencrypt
+  #     - ./data/certbot/www:/var/www/certbot
+  #     - ./data/nginx/log:/var/log/nginx
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   depends_on:
+  #     - currikiprod-client
+  #     - currikiprod-api
+  #     - currikiprod-trax
+  #     - currikiprod-tsugi
+  #   command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    
+
+  # certbot:
+  #   image: certbot/certbot
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./data/certbot/conf:/etc/letsencrypt
+  #     - ./data/certbot/www:/var/www/certbot
+  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    
+
+    
+  # currikiprod-api:
+  #   # build:
+  #   #   dockerfile: ./Dockerfile
+  #   #   context: ./api
+  #   container_name: currikiprod-api
+  #   image: quay.io/curriki/api:latest
+  #   ports:
+  #     - 9001:8000
+  #     # - 4003:4003
+  #   volumes:
+  #     - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
+  #     - ./api/storage:/var/www/html/storage
+  #     - ./api/.env:/var/www/html/.env
+  #     - ./data/certbot/conf:/etc/letsencrypt
+  #     - ./data/certbot/www:/var/www/certbot
+  #     - ./api:/var/www/html
+  #     - ./php.ini:/usr/local/etc/php/php.ini
+  #   restart: always
+
+
+  # currikiprod-admin:
+  #   # build:
+  #   #   dockerfile: ./Dockerfile
+  #   #   context: ./admin
+  #   image: quay.io/curriki/admin:latest
+  #   container_name: currikiprod-admin
+  #   ports:
+  #     - 6001:6000
+  #   volumes:
+  #     - ./admin/storage:/var/www/html/storage
+  #     - ./admin/.env:/var/www/html/.env
+  #     - ./admin:/var/www/html
+  #     - ./php.ini:/usr/local/etc/php/php.ini
+  #   restart: always 
+
+  # currikiprod-client:
+  #   # build:
+  #   #   dockerfile: ./Dockerfile
+  #   #   context: ./client
+  #   image: quay.io/curriki/client:latest
+  #   container_name: currikiprod-client
+  #   volumes:
+  #     - ./client/.env.local:/app/.env.local
+  #     - ./client:/app
+  #   restart: always
+  #   ports:
+  #     - 3000:3000
+
+  # currikiprod-clientdocs:
+  #   # build:
+  #   #   dockerfile: ./Dockerfile
+  #   #   context: ./clientdocs
+  #   image: quay.io/curriki/clientdocs:latest
+  #   container_name: currikiprod-clientdocs
+  #   volumes:
+  #     - ./clientdocs/.env.local:/app/.env.local
+  #     - ./clientdocs:/app
+  #   restart: always
+  #   ports:
+  #     - 2000:2000
+
+  # currikiprod-trax:
+  #   build:
+  #     dockerfile: ./Dockerfile
+  #     context: ./trax-lrs
+  #   image: quay.io/curriki/trax:latest
+  #   container_name: currikiprod-trax
+  #   ports:
+  #     - 6900:6900
+  #   volumes:
+  #     - ./trax-lrs/storage:/var/www/html/storage
+  #     - ./trax-lrs/.env:/var/www/html/.env
+  #     - ./data/certbot/conf:/etc/letsencrypt
+  #     - ./data/certbot/www:/var/www/certbot
+  #     - ./trax-lrs:/var/www/html
+  #     - ./php.ini:/usr/local/etc/php/php.ini
+  #   restart: always
+    
+
+  # currikiprod-tsugi:
+  #   build:
+  #     dockerfile: ./Dockerfile
+  #     context: ./tsugi
+  #   image: quay.io/curriki/tsugi:latest
+  #   container_name: currikiprod-tsugi
+  #   ports:
+  #     - 6300:6300
+  #   volumes:
+  #     - ./tsugi/config.php:/var/www/html/tsugi/config.php
+  #     - ./tsugi/mod/curriki/config.php:/var/www/html/tsugi/mod/curriki/config.php
+  #     - ./data/certbot/conf:/etc/letsencrypt
+  #     - ./data/certbot/www:/var/www/certbot
+  #     - ./tsugi:/var/www/html/tsugi
+  #     - ./php.ini:/usr/local/etc/php/php.ini
+  #   restart: always
+
 volumes: #provide volume
     currikiprod-mysqldata:
       driver: local
