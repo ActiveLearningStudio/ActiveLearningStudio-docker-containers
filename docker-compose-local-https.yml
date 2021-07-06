@@ -124,8 +124,8 @@ services:
       - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
       - ./api/storage:/var/www/html/storage
       - ./api/.env:/var/www/html/.env
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      # - ./data/certbot/conf:/etc/letsencrypt
+      # - ./data/certbot/www:/var/www/certbot
       - ./api:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
     restart: always
