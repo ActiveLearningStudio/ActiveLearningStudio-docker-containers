@@ -20,7 +20,7 @@ services:
       - currikiprod-laravel
 
   certbot:
-    image: certbot/certbot:arm32v6-latest
+    image: certbot/certbot:arm64v8-latest
     restart: unless-stopped
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt
