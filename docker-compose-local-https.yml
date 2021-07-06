@@ -158,6 +158,7 @@ services:
     container_name: currikiprod-client
     volumes:
       - ./client/.env.local:/app/.env.local
+      - /app/node_modules
       - ./client:/app
     restart: always
     ports:
