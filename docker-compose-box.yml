@@ -286,41 +286,23 @@ services:
   #     start_period: 10s
   #     retries: 3
 
-  # currikiprod-tsugi:
-  #   # build:
-  #   #   dockerfile: ./Dockerfile
-  #   #   context: ./tsugi
-  #   image: quay.io/curriki/tsugi:latest
-  #   container_name: currikiprod-tsugi
-  #   ports:
-  #     - 6300:6300
-  #   volumes:
-  #     - ./tsugi/config.php:/var/www/html/tsugi/config.php
-  #     - ./tsugi/mod/curriki/config.php:/var/www/html/tsugi/mod/curriki/config.php
-  #     - ./data/certbot/conf:/etc/letsencrypt
-  #     - ./data/certbot/www:/var/www/certbot
-  #   restart: always
-  #   deploy:
-  #     replicas: 1
-  #     update_config:
-  #       parallelism: 2
-  #       order: start-first
-  #       failure_action: rollback
-  #       delay: 10s
-  #     rollback_config:
-  #       parallelism: 0
-  #       order: stop-first
-  #     restart_policy:
-  #       condition: any
-  #       delay: 5s
-  #       max_attempts: 3
-  #       window: 120s
-  #   healthcheck:
-  #     test: sh -c "[ -f /var/www/html/tsugi/health.ok ]"
-  #     interval: 30s
-  #     timeout: 3s
-  #     start_period: 10s
-  #     retries: 3
+  currikiprod-tsugi:
+    # build:
+    #   dockerfile: ./Dockerfile
+    #   context: ./tsugi
+    image: quay.io/curriki/tsugi:box
+    container_name: currikiprod-tsugi
+    ports:
+      - 6300:6300
+    volumes:
+      - ./tsugi/config.php:/var/www/html/tsugi/config.php
+      - ./tsugi/mod/curriki/config.php:/var/www/html/tsugi/mod/curriki/config.php
+      # - ./data/certbot/conf:/etc/letsencrypt
+      # - ./data/certbot/www:/var/www/certbot
+    restart: always
+    networks:
+      - currikiprod1-laravel
+
   currikiprod-moodle:
     # build:
     #   dockerfile: ./Dockerfile
