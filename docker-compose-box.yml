@@ -17,7 +17,7 @@ services:
       - currikiprod-client
       - currikiprod-api
       # - currikiprod-trax
-      # - currikiprod-tsugi
+      - currikiprod-tsugi
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     networks:
       - currikiprod1-laravel
@@ -293,7 +293,7 @@ services:
     image: quay.io/curriki/tsugi:box
     container_name: currikiprod-tsugi
     ports:
-      - 6300:6300
+      - 6300:80
     volumes:
       - ./tsugi/config.php:/var/www/html/tsugi/config.php
       - ./tsugi/mod/curriki/config.php:/var/www/html/tsugi/mod/curriki/config.php
