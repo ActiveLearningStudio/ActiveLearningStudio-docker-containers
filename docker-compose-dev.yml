@@ -38,7 +38,7 @@ services:
     container_name: currikiprod-api
     image: quay.io/curriki/api:develop
     ports:
-      - 9001:8000
+      - 9001:80
       # - 4003:4003
     volumes:
       - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
@@ -76,7 +76,7 @@ services:
     container_name: currikiprod-es-migrate
     image: quay.io/curriki/es-migrate:develop
     ports:
-      - 9070:8000
+      - 9070:80
       # - 4003:4003
     volumes:
       - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
