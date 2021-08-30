@@ -1,8 +1,8 @@
 version: "3.7"
 services:
-  currikiprod1-postgres:
+  curriki-postgres:
     image: "postgres"
-    container_name: currikiprod1-postgres
+    container_name: curriki-postgres
     restart: unless-stopped
     tty: true
     ports:
@@ -11,23 +11,23 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-      PGDATA: /var/lib/postgresql/data/currikiprod1-postgresdata/
+      PGDATA: /var/lib/postgresql/data/curriki-postgresdata/
     volumes:
-      - currikiprod1-postgresdata:/var/lib/postgresql/data/currikiprod1-postgresdata/
+      - curriki-postgresdata:/var/lib/postgresql/data/curriki-postgresdata/
       - ./postgresscripts:/postgresscripts
       - ./postgresscripts/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
       - ./postgresscripts/traxdb.sql:/docker-entrypoint-initdb.d/traxdb.sql:ro
-      # - ./data/postgres/postgresql.conf:/var/lib/postgresql/data/currikiprod1-postgresdata/abc/postgresql.conf
+      # - ./data/postgres/postgresql.conf:/var/lib/postgresql/data/curriki-postgresdata/abc/postgresql.conf
     networks:
-      - currikiprod1-laravel
+      - curriki-laravel
     
-  currikiprod1-mysql:
+  curriki-mysql:
     image: mariadb
-    container_name: currikiprod1-mysql
+    container_name: curriki-mysql
     restart: unless-stopped
     tty: true
     volumes:
-      - currikiprod1-mysqldata:/var/lib/mysql
+      - curriki-mysqldata:/var/lib/mysql
       - ./mysqlscripts/tsugisetup.sql:/docker-entrypoint-initdb.d/tsugisetup.sql:ro
       # - ./tmp/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
       # - ./tmp/database/install_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -43,12 +43,12 @@ services:
     ports:
       - ${MYSQL_LOCAL_PORT}:3306
     networks:
-      - currikiprod1-laravel
+      - curriki-laravel
   
-  currikiprod-nginx:
+  curriki-nginx:
     image: nginx:1.15-alpine
     restart: unless-stopped
-    container_name: currikiprod-nginx
+    container_name: curriki-nginx
     volumes:
       - ./data/nginx/prod-conf:/etc/nginx/conf.d
       - ./data/certbot/conf:/etc/letsencrypt
@@ -58,13 +58,13 @@ services:
       - 80:80
       - 443:443
     depends_on:
-      - currikiprod-client
-      - currikiprod-api
-      # - currikiprod-trax
-      - currikiprod-tsugi
+      - curriki-client
+      - curriki-api
+      # - curriki-trax
+      - curriki-tsugi
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     networks:
-      - currikiprod1-laravel
+      - curriki-laravel
     
 
   certbot:
@@ -77,11 +77,11 @@ services:
     
 
     
-  currikiprod-api:
+  curriki-api:
     # build:
     #   dockerfile: ./Dockerfile
     #   context: ./api
-    container_name: currikiprod-api
+    container_name: curriki-api
     image: quay.io/curriki/api:box
     ports:
       - 9001:8000
@@ -94,7 +94,7 @@ services:
       # - ./data/certbot/www:/var/www/certbot
     restart: always
     networks:
-      - currikiprod1-laravel
+      - curriki-laravel
     # deploy:
     #   replicas: 2
     #   update_config:
@@ -117,11 +117,11 @@ services:
     #   start_period: 3m
     #   retries: 3
 
-  # currikiprod-es-migrate:
+  # curriki-es-migrate:
   #   # build:
   #   #   dockerfile: ./Dockerfile
   #   #   context: ./api
-  #   container_name: currikiprod-es-migrate
+  #   container_name: curriki-es-migrate
   #   image: quay.io/curriki/es-migrate:latest
   #   ports:
   #     - 9070:8000
@@ -135,7 +135,7 @@ services:
   #     - ./api/migrate.done:/var/www/html/migrate.done
   #   restart: none
   #   depends_on:
-  #     - currikiprod-api
+  #     - curriki-api
   #   deploy:
   #     replicas: 1
   #     update_config:
@@ -155,11 +155,11 @@ services:
   #     start_period: 3m
   #     retries: 3
   
-  # currikiprod-redis:
+  # curriki-redis:
   #   # build:
   #   #   dockerfile: ./Dockerfile
   #   #   context: ./api
-  #   container_name: currikiprod-redis
+  #   container_name: curriki-redis
   #   image: quay.io/curriki/redis:latest
   #   ports:
   #     - 4003:4003
@@ -192,12 +192,12 @@ services:
   #     start_period: 3m
   #     retries: 3
 
-  # currikiprod-admin:
+  # curriki-admin:
   #   # build:
   #   #   dockerfile: ./Dockerfile
   #   #   context: ./admin
   #   image: quay.io/curriki/admin:latest
-  #   container_name: currikiprod-admin
+  #   container_name: curriki-admin
   #   ports:
   #     - 6001:6000
   #   volumes:
@@ -226,19 +226,19 @@ services:
   #     start_period: 3m
   #     retries: 3
 
-  currikiprod-client:
+  curriki-client:
     # build:
     #   dockerfile: ./Dockerfile
     #   context: ./client
     image: quay.io/curriki/client:box
-    container_name: currikiprod-client
+    container_name: curriki-client
     volumes:
       - ./client/.env.local:/app/.env.local
     restart: always
     ports:
       - 3000:3000
     networks:
-      - currikiprod1-laravel
+      - curriki-laravel
     # deploy:
     #   replicas: 1
     #   update_config:
@@ -261,12 +261,12 @@ services:
     #   start_period: 3m
     #   retries: 3
 
-  # currikiprod-clientdocs:
+  # curriki-clientdocs:
   #   # build:
   #   #   dockerfile: ./Dockerfile
   #   #   context: ./clientdocs
   #   image: quay.io/curriki/clientdocs:latest
-  #   container_name: currikiprod-clientdocs
+  #   container_name: curriki-clientdocs
   #   volumes:
   #     - ./clientdocs/.env.local:/app/.env.local
   #   restart: always
@@ -294,12 +294,12 @@ services:
   #   #   start_period: 3m
   #   #   retries: 3
 
-  # currikiprod-trax:
+  # curriki-trax:
   #   # build:
   #   #   dockerfile: ./Dockerfile
   #   #   context: ./trax-lrs
   #   image: quay.io/curriki/trax:latest
-  #   container_name: currikiprod-trax
+  #   container_name: curriki-trax
   #   ports:
   #     - 6900:6900
   #   volumes:
@@ -330,12 +330,12 @@ services:
   #     start_period: 10s
   #     retries: 3
 
-  currikiprod-tsugi:
+  curriki-tsugi:
     # build:
     #   dockerfile: ./Dockerfile
     #   context: ./tsugi
     image: quay.io/curriki/tsugi:box
-    container_name: currikiprod-tsugi
+    container_name: curriki-tsugi
     ports:
       - 6300:80
     volumes:
@@ -345,13 +345,13 @@ services:
       # - ./data/certbot/www:/var/www/certbot
     restart: always
     networks:
-      - currikiprod1-laravel
+      - curriki-laravel
 
-  currikiprod-moodle:
+  curriki-moodle:
     # build:
     #   dockerfile: ./Dockerfile
     #   context: ./api
-    container_name: currikiprod-moodle
+    container_name: curriki-moodle
     image: quay.io/curriki/moodle:box
     ports:
       - 8250:8250
@@ -363,20 +363,20 @@ services:
       # - ./data/certbot/www:/var/www/certbot
     restart: always
     networks:
-      - currikiprod1-laravel
+      - curriki-laravel
 volumes: #provide volume
-    currikiprod1-mysqldata:
+    curriki-mysqldata:
       driver: local
       driver_opts:
         o: bind
         type: none
-        device: /media/sda1/curriki-db/dbdata/currikiprod1-mysqldata
-    currikiprod1-postgresdata:
+        device: /media/sda1/curriki-db/dbdata/curriki-mysqldata
+    curriki-postgresdata:
       driver: local
       driver_opts:
         o: bind
         type: none
-        device: /media/sda1/curriki-db/dbdata/currikiprod1-postgresdata
+        device: /media/sda1/curriki-db/dbdata/curriki-postgresdata
     pgadmin1-data:
       driver: local
       driver_opts:
@@ -384,12 +384,12 @@ volumes: #provide volume
         type: none
         device: /media/sda1/curriki-db/dbdata/pgadmin1-data
 
-networks:
-  currikiprod1-laravel:
-    name: currikiprod1-laravel
-    external: true
-
 # networks:
-#     currikiprod1-laravel:
-#         name: currikiprod1-laravel
-#         driver: bridge
+#   curriki-laravel:
+#     name: curriki-laravel
+#     external: true
+
+networks:
+  curriki-laravel:
+      name: curriki-laravel
+      driver: bridge
