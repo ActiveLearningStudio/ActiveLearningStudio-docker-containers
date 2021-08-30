@@ -82,7 +82,7 @@ services:
     #   dockerfile: ./Dockerfile
     #   context: ./api
     container_name: curriki-api
-    image: quay.io/curriki/api:box
+    image: quay.io/curriki/api:latest
     ports:
       - 9001:8000
       # - 4003:4003
@@ -230,7 +230,7 @@ services:
     # build:
     #   dockerfile: ./Dockerfile
     #   context: ./client
-    image: quay.io/curriki/client:box
+    image: quay.io/curriki/client:latest
     container_name: curriki-client
     volumes:
       - ./client/.env.local:/app/.env.local
@@ -334,7 +334,7 @@ services:
     # build:
     #   dockerfile: ./Dockerfile
     #   context: ./tsugi
-    image: quay.io/curriki/tsugi:box
+    image: quay.io/curriki/tsugi:latest
     container_name: curriki-tsugi
     ports:
       - 6300:80
@@ -352,7 +352,7 @@ services:
     #   dockerfile: ./Dockerfile
     #   context: ./api
     container_name: curriki-moodle
-    image: quay.io/curriki/moodle:box
+    image: quay.io/curriki/moodle:latest
     ports:
       - 8250:8250
       # - 4003:4003
