@@ -347,23 +347,23 @@ services:
     networks:
       - curriki-laravel
 
-  curriki-moodle:
-    # build:
-    #   dockerfile: ./Dockerfile
-    #   context: ./api
-    container_name: curriki-moodle
-    image: quay.io/curriki/moodle:latest
-    ports:
-      - 8250:8250
-      # - 4003:4003
-    volumes:
-      - ./moodle/config.php:/var/www/html/config.php
-      - ./moodle/moodledata:/var/www/moodledata
-      # - ./data/certbot/conf:/etc/letsencrypt
-      # - ./data/certbot/www:/var/www/certbot
-    restart: always
-    networks:
-      - curriki-laravel
+  # curriki-moodle:
+  #   # build:
+  #   #   dockerfile: ./Dockerfile
+  #   #   context: ./api
+  #   container_name: curriki-moodle
+  #   image: quay.io/curriki/moodle:latest
+  #   ports:
+  #     - 8250:8250
+  #     # - 4003:4003
+  #   volumes:
+  #     - ./moodle/config.php:/var/www/html/config.php
+  #     - ./moodle/moodledata:/var/www/moodledata
+  #     # - ./data/certbot/conf:/etc/letsencrypt
+  #     # - ./data/certbot/www:/var/www/certbot
+  #   restart: always
+  #   networks:
+  #     - curriki-laravel
 volumes: #provide volume
     curriki-mysqldata:
       driver: local
