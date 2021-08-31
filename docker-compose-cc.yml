@@ -143,6 +143,37 @@ services:
       timeout: 3s
       start_period: 3m
       retries: 3
+      
+  currikiprod-netlify:
+    # build:
+    #   dockerfile: ./Dockerfile
+    #   context: ./client
+    image: quay.io/curriki/netlify:latest
+    container_name: currikiprod-netlify
+    restart: always
+    ports:
+      - 3080:9000
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: sh -c "[ -f /app/health.ok ]"
+      interval: 2m
+      timeout: 3s
+      start_period: 3m
+      retries: 3
 
   currikiprod-client:
     # build:
