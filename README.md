@@ -12,9 +12,8 @@ Following applications are the part of CurrikiStudio
 
 1. [React Frontend application](https://github.com/ActiveLearningStudio/ActiveLearningStudio-react-client)
 2. [Backend API](https://github.com/ActiveLearningStudio/ActiveLearningStudio-API)
-3. [Admin Panel](https://github.com/ActiveLearningStudio/ActiveLearningStudio-admin-panel)
-4. [Tsugi for LTI](https://github.com/tsugiproject/tsugi)
-5. [Trax LRS](https://github.com/trax-project/trax-lrs)
+3. [Tsugi for LTI](https://github.com/tsugiproject/tsugi)
+4. [Trax LRS](https://github.com/trax-project/trax-lrs)
 
 ## Databases
 
@@ -25,31 +24,25 @@ Following applications are the part of CurrikiStudio
 
 1. Elastic Search (For API)
 
-# Infrastructure
+## Minimum Requirements
 
-Our Minimal Infrastructure is composed of 3 Linux VMs. All are running docker containers inside those
-
-1. VM1: CurrikiStudio Application (From Application Part above)
-2. VM2: Databases: Postgres + MySQL
-3. VM3: Elastic Search
-
-# Deployment of VM1 (Application)
-
-
-# Minimum Requirements
 1. 8GB RAM
 2. 2 VCPUs
 3. Tried on Ubuntu, Amaozon Linux, Oracle Linux. This list will grow after testing
 
-# Pre-Requisites
-
+## Pre-Requisites
 
 1. Docker version 19 or above
 
+# Infrastructure
 
-# Installation
+Our Minimal Infrastructure is composed of 3 Linux VMs. All are running docker containers inside those
 
-## Database VM
+**1. VM1: CurrikiStudio Application**
+**2. VM2: Databases: Postgres + MySQL**
+**3. VM3: Elastic Search**
+
+## Deployment of VM2 (Database VM)
 
 Install [docker compose](https://docs.docker.com/compose/install/)
 
@@ -63,9 +56,26 @@ Run following commands
 	sudo mkdir -p /mnt/DBData/pgadmin1-data
 	sudo docker-compose up -d
 
-## Elastic VM
+## Deployment of VM3 (Elastic VM)
 
 Currently elastic search is manual installation so you should following internet according to your environment
+
+
+# Deployment of VM1 
+
+Applications will be deployed on VM1
+
+## Installation Steps
+
+1. git clone https://github.com/ActiveLearningStudio/ActiveLearningStudio-docker-containers
+2. Create environemnt files for client / api / tsugi / trax
+3. Generate ssl (We are using letsencrypt) (sudo ./init-letsencrypt.sh)
+4. Run command
+
+
+> docker stack deploy -c docker-compose.yaml currikistack
+
+
 
 ### For Ubuntu 
 [https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-18-04](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-18-04)
@@ -74,9 +84,10 @@ Currently elastic search is manual installation so you should following internet
 
 [https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-centos-7](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-centos-7)
 
-## Application VM
 
-### Add DNS records
+
+
+### For Lets encrypt Add DNS records
 
 1. Copy public ip of the VM and put inside the DNS records like this.
 
@@ -90,19 +101,3 @@ You must create these A records like
 	example-trax.currikistudio.org 132.226.36.47
 
 This step is necessary to generate letsencrypt certificate which will be discussed later in this section
-
-### Clone Main Repo into some folder
-
-    git clone https://github.com/ActiveLearningStudio/ActiveLearningStudio-docker-containers.git curriki
-	cd curriki
-
-Change the values of setup.example.sh variables and run it (The purpose of the setup.example.sh file is to replace all the configuration variables inside the application according to your environment)
-	
-	sudo ./setup.example.sh
-	sudo docker swarm init
-	sudo ./init-letsencrypt.sh
-
-init-letsencrypt.sh will generate a certificate and attach to your installation
-
-Once this is run succesfully without errors your studio applicaiton will be on https://example.currikistudio.org
-
