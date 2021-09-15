@@ -61,7 +61,7 @@ Run following commands
 Currently elastic search is manual installation so you should following internet according to your environment
 
 
-# Deployment of VM1 
+## Deployment of VM1 
 
 Applications will be deployed on VM1
 
@@ -72,7 +72,7 @@ Applications will be deployed on VM1
 3. Generate ssl (We are using letsencrypt) (sudo ./init-letsencrypt.sh)
 4. Run command
 
-
+> docker swarm init
 > docker stack deploy -c docker-compose.yaml currikistack
 
 
