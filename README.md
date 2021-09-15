@@ -42,6 +42,10 @@ Our Minimal Infrastructure is composed of 3 Linux VMs. All are running docker co
 **2. VM2: Databases: Postgres + MySQL**
 **3. VM3: Elastic Search**
 
+## Structure
+
+![Structure](images/structure.png)
+
 ## Deployment of VM2 (Database VM)
 
 Install [docker compose](https://docs.docker.com/compose/install/)
