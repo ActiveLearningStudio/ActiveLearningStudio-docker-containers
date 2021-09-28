@@ -87,12 +87,10 @@ services:
     container_name: currikiprod-nginx
     volumes:
       - ./data/nginx/prod-conf:/etc/nginx/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
       - ./data/nginx/log:/var/log/nginx
     ports:
       - 80:80
-      - 443:443
+#       - 443:443
     depends_on:
       - currikiprod-client
       - currikiprod-api
@@ -101,19 +99,7 @@ services:
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     networks:
       - currikiprod-laravel
-    
-
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    networks:
-      - currikiprod-laravel
-    
-
+   
     
   currikiprod-api:
     build:
@@ -128,31 +114,11 @@ services:
       - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
       - ./api/storage:/var/www/html/storage
       - ./api/.env:/var/www/html/.env
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
       - ./api:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
     restart: always
     networks:
       - currikiprod-laravel
-
-
-  # currikiprod-admin:
-  #   # build:
-  #   #   dockerfile: ./Dockerfile
-  #   #   context: ./admin
-  #   image: quay.io/curriki/admin:latest
-  #   container_name: currikiprod-admin
-  #   ports:
-  #     - 6001:6000
-  #   volumes:
-  #     - ./admin/storage:/var/www/html/storage
-  #     - ./admin/.env:/var/www/html/.env
-  #     - ./admin:/var/www/html
-  #     - ./php.ini:/usr/local/etc/php/php.ini
-  #   restart: always 
-  #   networks:
-  #     - currikiprod-laravel
 
   currikiprod-client:
     build:
@@ -196,8 +162,6 @@ services:
     volumes:
       - ./trax-lrs/storage:/var/www/html/storage
       - ./trax-lrs/.env:/var/www/html/.env
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
       - ./trax-lrs:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini
     restart: always
@@ -216,8 +180,6 @@ services:
     volumes:
       - ./tsugi/config.php:/var/www/html/tsugi/config.php
       - ./tsugi/mod/curriki/config.php:/var/www/html/tsugi/mod/curriki/config.php
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
       - ./tsugi:/var/www/html/tsugi
       - ./php.ini:/usr/local/etc/php/php.ini
     restart: always
@@ -252,25 +214,25 @@ volumes: #provide volume
       driver_opts:
         o: bind
         type: none
-        device: /mnt/DBData/currikiprod-mysqldata
+        device: /var/DBData/currikiprod-mysqldata
     currikiprod-postgresdata:
       driver: local
       driver_opts:
         o: bind
         type: none
-        device: /mnt/DBData/currikiprod-postgresdata
+        device: /var/DBData/currikiprod-postgresdata
     pgadmin1-data:
       driver: local
       driver_opts:
         o: bind
         type: none
-        device: /mnt/DBData/pgadmin1-data
+        device: /var/DBData/pgadmin1-data
     currikiprod-elasticsearch:
       driver: local
       driver_opts:
         o: bind
         type: none
-        device: /mnt/DBData/currikiprod-elasticsearch
+        device: /var/DBData/currikiprod-elasticsearch
 
 networks:
   currikiprod-laravel:
