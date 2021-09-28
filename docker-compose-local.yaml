@@ -105,24 +105,24 @@ services:
 #       - currikiprod-laravel
    
     
-#   currikiprod-api:
-#     build:
-#       dockerfile: ./Dockerfile
-#       context: ./api
-#     container_name: currikiprod-api
-#     # image: quay.io/curriki/api:develop
-#     ports:
-#       - 9001:8000
-#       - 4003:4003
-#     volumes:
-#       - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
-#       - ./api/storage:/var/www/html/storage
-#       - ./api/.env:/var/www/html/.env
-#       - ./api:/var/www/html
-#       - ./php.ini:/usr/local/etc/php/php.ini
-#     restart: always
-#     networks:
-#       - currikiprod-laravel
+  currikiprod-api:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./api
+    container_name: currikiprod-api
+    # image: quay.io/curriki/api:develop
+    ports:
+      - 9001:8000
+      - 4003:4003
+    volumes:
+      - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
+      - ./api/storage:/var/www/html/storage
+      - ./api/.env:/var/www/html/.env
+      - ./api:/var/www/html
+      - ./php.ini:/usr/local/etc/php/php.ini
+    restart: always
+    networks:
+      - currikiprod-laravel
 
 #   currikiprod-client:
 #     build:
