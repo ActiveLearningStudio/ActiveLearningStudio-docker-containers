@@ -157,40 +157,40 @@ services:
   #   networks:
   #     - currikiprod-laravel
 
-  currikiprod-trax:
-    build:
-      dockerfile: ./Dockerfile
-      context: ./trax-lrs
-    # image: quay.io/curriki/trax:latest
-    container_name: currikiprod-trax
-    ports:
-      - 6900:6900
-    volumes:
-      - ./trax-lrs/storage:/var/www/html/storage
-      - ./trax-lrs/.env:/var/www/html/.env
-      - ./trax-lrs:/var/www/html
-      - ./php.ini:/usr/local/etc/php/php.ini
-    restart: always
-    networks:
-      - currikiprod-laravel
+#   currikiprod-trax:
+#     build:
+#       dockerfile: ./Dockerfile
+#       context: ./trax-lrs
+#     # image: quay.io/curriki/trax:latest
+#     container_name: currikiprod-trax
+#     ports:
+#       - 6900:6900
+#     volumes:
+#       - ./trax-lrs/storage:/var/www/html/storage
+#       - ./trax-lrs/.env:/var/www/html/.env
+#       - ./trax-lrs:/var/www/html
+#       - ./php.ini:/usr/local/etc/php/php.ini
+#     restart: always
+#     networks:
+#       - currikiprod-laravel
     
 
-  currikiprod-tsugi:
-    build:
-      dockerfile: ./Dockerfile
-      context: ./tsugi
-    # image: quay.io/curriki/tsugi:latest
-    container_name: currikiprod-tsugi
-    ports:
-      - 6300:6300
-    volumes:
-      - ./tsugi/config.php:/var/www/html/tsugi/config.php
-      - ./tsugi/mod/curriki/config.php:/var/www/html/tsugi/mod/curriki/config.php
-      - ./tsugi:/var/www/html/tsugi
-      - ./php.ini:/usr/local/etc/php/php.ini
-    restart: always
-    networks:
-      - currikiprod-laravel
+#   currikiprod-tsugi:
+#     build:
+#       dockerfile: ./Dockerfile
+#       context: ./tsugi
+#     # image: quay.io/curriki/tsugi:latest
+#     container_name: currikiprod-tsugi
+#     ports:
+#       - 6300:6300
+#     volumes:
+#       - ./tsugi/config.php:/var/www/html/tsugi/config.php
+#       - ./tsugi/mod/curriki/config.php:/var/www/html/tsugi/mod/curriki/config.php
+#       - ./tsugi:/var/www/html/tsugi
+#       - ./php.ini:/usr/local/etc/php/php.ini
+#     restart: always
+#     networks:
+#       - currikiprod-laravel
 
 #   currikiprod-elastic:
 #     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
