@@ -24,25 +24,27 @@ services:
     networks:
       - currikiprod-laravel
     
-  currikiprod-pgadmin:
-    image: dpage/pgadmin4:4.18
-    container_name: currikiprod-pgadmin
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-      PGADMIN_LISTEN_PORT: 80
-    ports:
-      - ${PGADMIN_EXPOSED_PORT}:80
-    volumes:
-      - pgadmin1-data:/var/lib/pgadmin
-      - ./postgresscripts:/postgresscripts
-    links:
-      - "currikiprod-postgres:pgsql-server"
-    networks:
-      - currikiprod-laravel
+#   currikiprod-pgadmin:
+#     platform: linux/arm64/v8
+#     image: dpage/pgadmin4:4.18
+#     container_name: currikiprod-pgadmin
+#     restart: always
+#     environment:
+#       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+#       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+#       PGADMIN_LISTEN_PORT: 80
+#     ports:
+#       - ${PGADMIN_EXPOSED_PORT}:80
+#     volumes:
+#       - pgadmin1-data:/var/lib/pgadmin
+#       - ./postgresscripts:/postgresscripts
+#     links:
+#       - "currikiprod-postgres:pgsql-server"
+#     networks:
+#       - currikiprod-laravel
   
   currikiprod-mysql:
+    platform: linux/arm64/v8
     image: mysql:5.7.22
     container_name: currikiprod-mysql
     restart: unless-stopped
@@ -65,22 +67,23 @@ services:
       - ${MYSQL_LOCAL_PORT}:3306
     networks:
       - currikiprod-laravel
-  currikiprod-phpmyadmin:
-    depends_on:
-      - currikiprod-mysql
-    image: phpmyadmin/phpmyadmin
-    container_name: currikiprod-phpmyadmin
-    restart: always
-    ports:
-      - ${PHPMYADMIN_EXPOSED_PORT}:80
-    volumes:
-      - ./php.ini:/usr/local/etc/php/php.ini
-    environment:
-      PMA_HOST: currikiprod-mysql
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      PMA_ABSOLUTE_URI: ${PMA_ABSOLUTE_URI}
-    networks:
-      - currikiprod-laravel
+#   currikiprod-phpmyadmin:
+#     platform: linux/arm64/v8
+#     depends_on:
+#       - currikiprod-mysql
+#     image: phpmyadmin/phpmyadmin
+#     container_name: currikiprod-phpmyadmin
+#     restart: always
+#     ports:
+#       - ${PHPMYADMIN_EXPOSED_PORT}:80
+#     volumes:
+#       - ./php.ini:/usr/local/etc/php/php.ini
+#     environment:
+#       PMA_HOST: currikiprod-mysql
+#       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+#       PMA_ABSOLUTE_URI: ${PMA_ABSOLUTE_URI}
+#     networks:
+#       - currikiprod-laravel
       
   currikiprod-nginx:
     image: nginx:1.15-alpine
