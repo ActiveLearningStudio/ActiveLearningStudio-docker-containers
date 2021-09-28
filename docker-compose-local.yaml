@@ -43,30 +43,31 @@ services:
 #     networks:
 #       - currikiprod-laravel
   
-#   currikiprod-mysql:
-#     platform: linux/arm64/v8
-#     image: mysql:5.7.22
-#     container_name: currikiprod-mysql
-#     restart: unless-stopped
-#     tty: true
-#     volumes:
-#       - currikiprod-mysqldata:/var/lib/mysql
-#       - ./mysqlscripts/tsugisetup.sql:/docker-entrypoint-initdb.d/tsugisetup.sql:ro
-#       # - ./tmp/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
-#       # - ./tmp/database/install_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
-#       - ./mysqlscripts:/mysqlscripts
-#     environment:
-#       MYSQL_DATABASE: ${MYSQL_DATABASE}
-#       MYSQL_USER: ${MYSQL_USER}
-#       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-#       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-#       SERVICE_TAGS: dev
-#       SERVICE_NAME: mysql
-#     # command: mysqld --init-file="/tmp/database/install_db.sql"
-#     ports:
-#       - ${MYSQL_LOCAL_PORT}:3306
-#     networks:
-#       - currikiprod-laravel
+  currikiprod-mysql:
+    platform: linux/arm64/v8
+    image: mysql:5.7.22
+    container_name: currikiprod-mysql
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - currikiprod-mysqldata:/var/lib/mysql
+      - ./mysqlscripts/tsugisetup.sql:/docker-entrypoint-initdb.d/tsugisetup.sql:ro
+      # - ./tmp/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
+      # - ./tmp/database/install_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./mysqlscripts:/mysqlscripts
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    # command: mysqld --init-file="/tmp/database/install_db.sql"
+    ports:
+      - ${MYSQL_LOCAL_PORT}:3306
+    networks:
+      - currikiprod-laravel
+      
 #   currikiprod-phpmyadmin:
 #     platform: linux/arm64/v8
 #     depends_on:
