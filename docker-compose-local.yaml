@@ -44,6 +44,7 @@ services:
 #       - currikiprod-laravel
   
   currikiprod-mysql:
+    platform: linux/arm64
     image: mysql:5.7.22
     container_name: currikiprod-mysql
     restart: unless-stopped
