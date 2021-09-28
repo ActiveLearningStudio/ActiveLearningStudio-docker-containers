@@ -44,8 +44,7 @@ services:
 #       - currikiprod-laravel
   
   currikiprod-mysql:
-    platform: linux/arm64
-    image: mysql:5.7.22
+    image: mariadb
     container_name: currikiprod-mysql
     restart: unless-stopped
     tty: true
