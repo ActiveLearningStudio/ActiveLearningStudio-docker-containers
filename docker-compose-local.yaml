@@ -1,0 +1,278 @@
+version: "3.7"
+services:
+
+  
+  currikiprod-postgres:
+    image: "postgres"
+    container_name: currikiprod-postgres
+    restart: unless-stopped
+    tty: true
+    ports:
+      - ${POSTGRES_EXPOSED_PORT}:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/currikiprod-postgresdata/
+    volumes:
+      - currikiprod-postgresdata:/var/lib/postgresql/data/currikiprod-postgresdata/
+      - ./postgresscripts:/postgresscripts
+      - ./postgresscripts/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
+      - ./postgresscripts/traxdb.sql:/docker-entrypoint-initdb.d/traxdb.sql:ro
+      # - ./data/postgres/postgresql.conf:/var/lib/postgresql/data/currikiprod-postgresdata/abc/postgresql.conf
+    networks:
+      - currikiprod-laravel
+    
+  currikiprod-pgadmin:
+    image: dpage/pgadmin4:4.18
+    container_name: currikiprod-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - ${PGADMIN_EXPOSED_PORT}:80
+    volumes:
+      - pgadmin1-data:/var/lib/pgadmin
+      - ./postgresscripts:/postgresscripts
+    links:
+      - "currikiprod-postgres:pgsql-server"
+    networks:
+      - currikiprod-laravel
+  
+  currikiprod-mysql:
+    image: mysql:5.7.22
+    container_name: currikiprod-mysql
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - currikiprod-mysqldata:/var/lib/mysql
+      - ./mysqlscripts/tsugisetup.sql:/docker-entrypoint-initdb.d/tsugisetup.sql:ro
+      # - ./tmp/database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
+      # - ./tmp/database/install_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./mysqlscripts:/mysqlscripts
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    # command: mysqld --init-file="/tmp/database/install_db.sql"
+    ports:
+      - ${MYSQL_LOCAL_PORT}:3306
+    networks:
+      - currikiprod-laravel
+  currikiprod-phpmyadmin:
+    depends_on:
+      - currikiprod-mysql
+    image: phpmyadmin/phpmyadmin
+    container_name: currikiprod-phpmyadmin
+    restart: always
+    ports:
+      - ${PHPMYADMIN_EXPOSED_PORT}:80
+    volumes:
+      - ./php.ini:/usr/local/etc/php/php.ini
+    environment:
+      PMA_HOST: currikiprod-mysql
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      PMA_ABSOLUTE_URI: ${PMA_ABSOLUTE_URI}
+    networks:
+      - currikiprod-laravel
+      
+  currikiprod-nginx:
+    image: nginx:1.15-alpine
+    restart: unless-stopped
+    container_name: currikiprod-nginx
+    volumes:
+      - ./data/nginx/prod-conf:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+      - ./data/nginx/log:/var/log/nginx
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - currikiprod-client
+      - currikiprod-api
+      - currikiprod-trax
+      - currikiprod-tsugi
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    networks:
+      - currikiprod-laravel
+    
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - currikiprod-laravel
+    
+
+    
+  currikiprod-api:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./api
+    container_name: currikiprod-api
+    # image: quay.io/curriki/api:develop
+    ports:
+      - 9001:8000
+      - 4003:4003
+    volumes:
+      - ./api/laravel-echo-server.json:/var/www/html/laravel-echo-server.json
+      - ./api/storage:/var/www/html/storage
+      - ./api/.env:/var/www/html/.env
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+      - ./api:/var/www/html
+      - ./php.ini:/usr/local/etc/php/php.ini
+    restart: always
+    networks:
+      - currikiprod-laravel
+
+
+  # currikiprod-admin:
+  #   # build:
+  #   #   dockerfile: ./Dockerfile
+  #   #   context: ./admin
+  #   image: quay.io/curriki/admin:latest
+  #   container_name: currikiprod-admin
+  #   ports:
+  #     - 6001:6000
+  #   volumes:
+  #     - ./admin/storage:/var/www/html/storage
+  #     - ./admin/.env:/var/www/html/.env
+  #     - ./admin:/var/www/html
+  #     - ./php.ini:/usr/local/etc/php/php.ini
+  #   restart: always 
+  #   networks:
+  #     - currikiprod-laravel
+
+  currikiprod-client:
+    build:
+      dockerfile: ./Dockerfile.dev
+      context: ./client
+    # image: quay.io/curriki/client:local
+    container_name: currikiprod-client
+    volumes:
+      - ./client/.env.local:/app/.env.local
+      - /app/node_modules
+      - ./client:/app
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - currikiprod-laravel
+
+  # currikiprod-clientdocs:
+  #   # build:
+  #   #   dockerfile: ./Dockerfile
+  #   #   context: ./clientdocs
+  #   image: quay.io/curriki/clientdocs:latest
+  #   container_name: currikiprod-clientdocs
+  #   volumes:
+  #     - ./clientdocs/.env.local:/app/.env.local
+  #     - ./clientdocs:/app
+  #   restart: always
+  #   ports:
+  #     - 2000:2000
+  #   networks:
+  #     - currikiprod-laravel
+
+  currikiprod-trax:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./trax-lrs
+    # image: quay.io/curriki/trax:latest
+    container_name: currikiprod-trax
+    ports:
+      - 6900:6900
+    volumes:
+      - ./trax-lrs/storage:/var/www/html/storage
+      - ./trax-lrs/.env:/var/www/html/.env
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+      - ./trax-lrs:/var/www/html
+      - ./php.ini:/usr/local/etc/php/php.ini
+    restart: always
+    networks:
+      - currikiprod-laravel
+    
+
+  currikiprod-tsugi:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./tsugi
+    # image: quay.io/curriki/tsugi:latest
+    container_name: currikiprod-tsugi
+    ports:
+      - 6300:6300
+    volumes:
+      - ./tsugi/config.php:/var/www/html/tsugi/config.php
+      - ./tsugi/mod/curriki/config.php:/var/www/html/tsugi/mod/curriki/config.php
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+      - ./tsugi:/var/www/html/tsugi
+      - ./php.ini:/usr/local/etc/php/php.ini
+    restart: always
+    networks:
+      - currikiprod-laravel
+
+  currikiprod-elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
+    container_name: currikiprod-elastic
+    environment:
+      - node.name=currikiprod-elastic
+      - cluster.name=es-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - xpack.security.enabled=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - currikiprod-elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - currikiprod-laravel
+
+volumes: #provide volume
+    currikiprod-mysqldata:
+      driver: local
+      driver_opts:
+        o: bind
+        type: none
+        device: /mnt/DBData/currikiprod-mysqldata
+    currikiprod-postgresdata:
+      driver: local
+      driver_opts:
+        o: bind
+        type: none
+        device: /mnt/DBData/currikiprod-postgresdata
+    pgadmin1-data:
+      driver: local
+      driver_opts:
+        o: bind
+        type: none
+        device: /mnt/DBData/pgadmin1-data
+    currikiprod-elasticsearch:
+      driver: local
+      driver_opts:
+        o: bind
+        type: none
+        device: /mnt/DBData/currikiprod-elasticsearch
+
+networks:
+  currikiprod-laravel:
+    name: currikiprod-laravel
+    driver: bridge
