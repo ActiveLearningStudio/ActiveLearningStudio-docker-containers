@@ -6,6 +6,7 @@ services:
     platform: linux/arm64/v8
     image: "postgres"
     container_name: currikiprod-postgres
+    privileged: true
     restart: unless-stopped
     tty: true
     ports:
@@ -46,6 +47,7 @@ services:
   currikiprod-mysql:
     image: mariadb
     container_name: currikiprod-mysql
+    privileged: true
     restart: unless-stopped
     tty: true
     volumes:
