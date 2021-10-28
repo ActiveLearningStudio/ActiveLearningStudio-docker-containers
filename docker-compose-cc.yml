@@ -284,7 +284,7 @@ services:
     image: quay.io/curriki/tsugi:latest
     container_name: currikiprod-tsugi
     ports:
-      - 6300:6300
+      - 6300:80
     volumes:
       - ./tsugi/config.php:/var/www/html/tsugi/config.php
       - ./tsugi/mod/curriki/config.php:/var/www/html/tsugi/mod/curriki/config.php

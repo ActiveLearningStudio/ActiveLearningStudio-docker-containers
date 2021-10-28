@@ -7,7 +7,7 @@ fi
 
 
 
-domains=(substitute-terraform-domain.com substitute-terraform-admin-domain.com substitute-terraform-tsugi-domain.com substitute-terraform-trax-domain.com)
+domains=(substitute-terraform-domain.com substitute-terraform-tsugi-domain.com substitute-terraform-trax-domain.com)
 
 rsa_key_size=4096
 data_path="./data/certbot"
