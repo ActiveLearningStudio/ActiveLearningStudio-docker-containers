@@ -51,7 +51,7 @@ services:
     #   dockerfile: ./Dockerfile
     #   context: ./api
     container_name: currikiprod-api
-    image: quay.io/curriki/api:latest
+    image: quay.io/curriki/api:stage
     ports:
       - 9001:80
       # - 4003:4003
@@ -86,7 +86,7 @@ services:
     #   dockerfile: ./Dockerfile
     #   context: ./api
     container_name: currikiprod-cron
-    image: quay.io/curriki/cron:latest
+    image: quay.io/curriki/cron:stage
     # ports:
     #   - 4003:4003
     volumes:
@@ -121,7 +121,7 @@ services:
     # build:
     #   dockerfile: ./Dockerfile
     #   context: ./client
-    image: quay.io/curriki/client:latest
+    image: quay.io/curriki/client:stage
     container_name: currikiprod-client
     volumes:
       - ./client/.env.local:/app/.env.local
