@@ -11,6 +11,8 @@ H5P.SingleChoiceSet = (function ($, UI, Question, SingleChoice, SolutionView, Re
   function SingleChoiceSet(options, contentId, contentData) {
     var self = this;
 
+    
+
     // Extend defaults with provided options
     this.contentId = contentId;
     this.contentData = contentData;
@@ -48,6 +50,7 @@ H5P.SingleChoiceSet = (function ($, UI, Question, SingleChoice, SolutionView, Re
      */
     this.stopWatches = [];
     this.startStopWatch(this.currentIndex);
+    this.user_answers = [];
 
     /**
      * The users input on the questions. Uses the same index as this.options.choices
@@ -113,6 +116,8 @@ H5P.SingleChoiceSet = (function ($, UI, Question, SingleChoice, SolutionView, Re
     for (var i = 0; i < this.options.choices.length; i++) {
       var choice = new SingleChoice(this.options.choices[i], i, this.contentId);
       choice.on('finished', this.handleQuestionFinished, this);
+
+      
       choice.on('alternative-selected', this.handleAlternativeSelected, this);
       choice.appendTo(this.$choices, (i === this.currentIndex));
       this.choices.push(choice);
@@ -218,10 +223,16 @@ H5P.SingleChoiceSet = (function ($, UI, Question, SingleChoice, SolutionView, Re
     var self = this;
 
     var index = event.data.index;
-
+    console.log(event);
+    //console.log(this);
     // saves user response
     var userResponse = self.userResponses[index] = event.data.answerIndex;
-
+    //console.log(userResponse);
+    //console.log(self.userResponses);
+    console.log(self.options.choices[index].question);
+    
+    self.user_answers[self.options.choices[index].question] = (event.data.correct) ? "correct" : "In correct";
+    console.log(self.user_answers);
     // trigger answered event
     var duration = this.stopStopWatch(index);
     var xapiEvent = self.createXApiAnsweredEvent(self.options.choices[index], userResponse, duration);
@@ -230,6 +241,10 @@ H5P.SingleChoiceSet = (function ($, UI, Question, SingleChoice, SolutionView, Re
 
     self.continue();
   };
+
+  SingleChoiceSet.prototype.UpdateUserAnswers = function (question,response) { 
+        this.user_answers[question] = response;
+   };
 
   /**
    * Setup auto continue
@@ -293,6 +308,9 @@ H5P.SingleChoiceSet = (function ($, UI, Question, SingleChoice, SolutionView, Re
   SingleChoiceSet.prototype.createXApiAnsweredEvent = function (question, userAnswer, duration) {
     var self = this;
     var types = XApiEventBuilder.interactionTypes;
+
+    console.log(question);
+
 
     // creates the definition object
     var definition = XApiEventBuilder.createDefinition()
@@ -385,12 +403,20 @@ H5P.SingleChoiceSet = (function ($, UI, Question, SingleChoice, SolutionView, Re
     else {
       self.showButton('try-again');
       self.showButton('show-solution');
+      if( typeof this.parent == 'undefined') { 
+       self.showButton('view-summary');
+      }
     }
     self.handleQueuedButtonChanges();
     self.scoreTimeout = undefined;
 
     if (!noXAPI) {
-      self.triggerXAPIScored(score, self.options.choices.length, 'completed', true, (100 * score / self.options.choices.length) >= self.options.behaviour.passPercentage);
+      if( typeof this.parent == 'undefined') { 
+        self.triggerXAPIScored(score, self.options.choices.length, 'completed', true, (100 * score / self.options.choices.length) >= self.options.behaviour.passPercentage);
+      }else{
+        self.triggerXAPIScored(score, self.options.choices.length, 'answered', true, (100 * score / self.options.choices.length) >= self.options.behaviour.passPercentage);
+      } 
+      
     }
 
     self.trigger('resize');
@@ -484,8 +510,63 @@ H5P.SingleChoiceSet = (function ($, UI, Question, SingleChoice, SolutionView, Re
       }, self.results.corrects !== self.options.choices.length, {
         'aria-label': this.l10n.a11yShowSolution,
       });
+      if( typeof this.parent == 'undefined') {
+        this.addButton('view-summary', 'View Summary', function () {
+          //self.showSolutions();
+          var confirmationDialog = new H5P.ConfirmationDialog({
+            headerText: 'Single Choice Set Summary',
+            dialogText: viewSummary(self),
+            cancelText: 'Cancel',
+            confirmText: "Submit Answers"
+          });
+          
+          confirmationDialog.on('confirmed', function () {
+            self.triggerXAPIScored(0, 1, 'submitted-curriki');
+            //confirmationDialog.hide();
+            H5P.jQuery('.h5p-question-show-solution').click();
+            
+          });
+          
+          
+          confirmationDialog.appendTo(parent.document.body);
+          confirmationDialog.show();
+
+
+
+        });
+      }
     }
   };
+
+
+  function viewSummary(self){
+    var table_content = '<tbody>';
+    console.log(self.user_answers);
+        console.log(self);
+        console.log(this.contentData);
+        console.log(self.contentData);
+    console.log(self.options.answers);
+    console.log(H5PIntegration);
+    for (var m =0; m < self.options.choices.length; m++){
+      var cstm_option = self.options.choices;
+      console.log(cstm_option);
+      console.log(self.userResponses);
+      console.log(self.choices[m].answered);
+      console.log(m);
+      console.log(self.user_answers[m]);
+      console.log(self.user_answers);
+
+     
+      table_content += '<tr>';
+      table_content += '<td>'+cstm_option[m].question+'</td>';
+      table_content += '<td>'+cstm_option[m].answers[self.userResponses[m]]+'</td>';
+      table_content += '<td>'+self.user_answers[cstm_option[m].question]+'</td>';
+      table_content += '</tr>';
+      
+    }
+    var summary_html = '<div class="custom-summary-section"><div class="h5p-summary-table-pages"><table class="h5p-score-table-custom" style="min-height:100px;width:100%"><thead><tr><th>Question</th><th>Answer</th><th>Result</th></tr></thead>'+table_content+'</table></div></div>';
+    return summary_html;
+  }
 
   /**
    * Create main content
@@ -732,7 +813,7 @@ H5P.SingleChoiceSet = (function ($, UI, Question, SingleChoice, SolutionView, Re
    */
   SingleChoiceSet.prototype.getXAPIData = function () {
     var self = this;
-
+    
     // create array with userAnswer
     var children =  self.options.choices.map(function (question, index) {
       var userResponse = self.userResponses[index] >= 0 ? self.userResponses[index] : '';

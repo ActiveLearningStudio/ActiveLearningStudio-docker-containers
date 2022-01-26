@@ -63,6 +63,7 @@ H5P.Blanks = (function ($, Question) {
       showSolutions: "Show solution",
       tryAgain: "Try again",
       checkAnswer: "Check",
+      viewSummary: "View Summary",
       changeAnswer: "Change answer",
       notFilledOut: "Please fill in all blanks to view solution",
       answerIsCorrect: "':ans' is correct",
@@ -104,6 +105,8 @@ H5P.Blanks = (function ($, Question) {
 
     // Clozes
     this.clozes = [];
+
+    this.questions_arr = [];
 
     // Keep track tabbing forward or backwards
     this.shiftPressed = false;
@@ -195,7 +198,7 @@ H5P.Blanks = (function ($, Question) {
 
     if (!self.params.behaviour.autoCheck && this.params.behaviour.enableCheckButton) {
       // Check answer button
-      self.addButton('check-answer', self.params.checkAnswer, function () {
+      self.addButton('check-answer', self.params.checkAnswer, function () { 
         // Move focus to top of content
         self.a11yHeader.innerHTML = self.params.a11yHeader;
         self.a11yHeader.focus();
@@ -214,6 +217,48 @@ H5P.Blanks = (function ($, Question) {
           $parentElement: $container
         }
       });
+
+      if(typeof this.parent == "undefined") {
+        self.addButton('view-summary', self.params.viewSummary, function () { 
+          
+          var confirmationDialog = new H5P.ConfirmationDialog({
+            headerText: 'Fill in the blanks Summary',
+            dialogText: showSummary(self),
+            cancelText: 'Cancel',
+            confirmText: "Submit Answers"
+          });
+          
+          confirmationDialog.on('confirmed', function () {
+            self.triggerXAPIScored(0, 1, 'submitted-curriki');
+            //confirmationDialog.hide();
+            H5P.jQuery('.h5p-question-check-answer').click();
+            
+          });
+          
+          console.log(self.a11yHeader);
+          confirmationDialog.appendTo(parent.document.body);
+          confirmationDialog.show();
+          
+          // Move focus to top of content
+          /*self.a11yHeader.innerHTML = self.params.a11yHeader;
+          self.a11yHeader.focus();
+  
+          self.toggleButtonVisibility(STATE_CHECKING);
+          self.markResults();
+          self.showEvaluation();
+          self.triggerAnswered();*/
+        }, true, {
+          'aria-label': self.params.a11yCheck,
+        }, {
+          confirmationDialog: {
+            enable: self.params.behaviour.confirmCheckDialog,
+            l10n: self.params.confirmCheck,
+            instance: self,
+            $parentElement: $container
+          }
+        });
+      }
+      
     }
 
     // Show solution button
@@ -243,6 +288,21 @@ H5P.Blanks = (function ($, Question) {
     self.toggleButtonVisibility(STATE_ONGOING);
   };
 
+
+
+  function removeItemAll(arr, value) {
+    
+    var i = 0;
+    while (i < arr.length) {
+      if (arr[i] === value) {
+        arr.splice(i, 1);
+      } else {
+        ++i;
+      }
+    }
+   
+    return arr;
+  }
   /**
    * Find blanks in a string and run a handler on those blanks
    *
@@ -278,6 +338,12 @@ H5P.Blanks = (function ($, Question) {
       // Find the next cloze
       clozeStart = question.indexOf('*', clozeEnd);
     }
+     var return_question = question.split('<span class="h5p-input-wrapper"><input type="text" class="h5p-text-input" autocomplete="off" autocapitalize="off" spellcheck="false"></span>');
+     
+     
+     return_question.pop();
+     this.questions_arr = this.questions_arr.concat(return_question);
+     
     return question;
   };
 
@@ -440,6 +506,26 @@ H5P.Blanks = (function ($, Question) {
       }
     }, 1);
   };
+
+  function showSummary(self) {
+    
+    var table_content = '<tbody>';
+    for (var m =0; m < self.clozes.length; m++){
+      
+      var strwa = self.questions_arr[m].replace('<br>','');
+      var strwa = strwa.replace('<p>','');
+      var strwa = strwa.replace('.','');
+      var answer_status = (self.clozes[m].correct()) ? "Correct" : "Incorrect";
+      table_content += '<tr>';
+      table_content += '<td>'+strwa+'</td>';
+      table_content += '<td>'+self.clozes[m].getUserAnswer()+'</td>';
+      table_content += '<td>'+answer_status+'</td>';
+      table_content += '</tr>';
+      
+    }
+    var summary_html = '<div class="custom-summary-section"><div class="h5p-summary-table-pages"><table class="h5p-score-table-custom" style="min-height:100px;width:100%"><thead><tr><th>Question</th><th>Answer</th><th>Result</th></tr></thead>'+table_content+'</table></div></div>';
+    return summary_html;
+  }
 
   /**
    * Resize all text field growth to current size.

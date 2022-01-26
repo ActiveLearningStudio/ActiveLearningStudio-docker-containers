@@ -66,6 +66,10 @@ H5P.VideoHtml5 = (function ($) {
      * @private
      */
     const setInitialSource = function () {
+      if (qualities[currentQuality] === undefined) {
+        return;
+      }
+
       if (H5P.setSource !== undefined) {
         H5P.setSource(video, qualities[currentQuality].source, self.contentId)
       }
@@ -177,6 +181,16 @@ H5P.VideoHtml5 = (function ($) {
     video.setAttribute('webkit-playsinline', '');
     video.setAttribute('playsinline', '');
     video.setAttribute('preload', 'metadata');
+
+    // Remove buttons in Chrome's video player:
+    let controlsList = 'nodownload';
+    if (options.disableFullscreen) {
+      controlsList += ' nofullscreen';
+    }
+    if (options.disableRemotePlayback) {
+      controlsList += ' noremoteplayback';
+    }
+    video.setAttribute('controlsList', controlsList);
 
     // Set options
     video.disableRemotePlayback = (options.disableRemotePlayback ? true : false);
@@ -644,6 +658,7 @@ H5P.VideoHtml5 = (function ($) {
     mapEvent('pause', 'stateChange', H5P.Video.PAUSED);
     mapEvent('waiting', 'stateChange', H5P.Video.BUFFERING);
     mapEvent('loadedmetadata', 'loaded');
+    mapEvent('canplay', 'canplay');
     mapEvent('error', 'error');
     mapEvent('ratechange', 'playbackRateChange');
 
@@ -678,6 +693,22 @@ H5P.VideoHtml5 = (function ($) {
         }
       });
     });
+
+    // Alternative to 'canplay' event
+    /*self.on('resize', function () {
+      if (video.offsetParent === null) {
+        return;
+      }
+
+      video.style.width = '100%';
+      video.style.height = '100%';
+
+      var width = video.clientWidth;
+      var height = options.fit ? video.clientHeight : (width * (video.videoHeight / video.videoWidth));
+
+      video.style.width = width + 'px';
+      video.style.height = height + 'px';
+    });*/
 
     // Video controls are ready
     nextTick(function () {

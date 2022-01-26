@@ -11,7 +11,7 @@ H5P.Column = (function (EventDispatcher) {
   function Column(params, id, data) {
     /** @alias H5P.Column# */
     var self = this;
-
+    console.log(params);
     // We support events by extending this class
     EventDispatcher.call(self);
 
@@ -25,10 +25,13 @@ H5P.Column = (function (EventDispatcher) {
 
     // Column wrapper element
     var wrapper;
+    var iter = 0;
 
     // H5P content in the column
     var instances = [];
     var instanceContainers = [];
+
+    var skipped = [];
 
     // Number of tasks among instances
     var numTasks = 0;
@@ -116,12 +119,15 @@ H5P.Column = (function (EventDispatcher) {
         // Prevent video from growing endlessly since height is unlimited.
         content.params.visuals.fit = false;
       }
-
+      console.log(content);
       // Create content instance
       var instance = H5P.newRunnable(content, id, undefined, true, contentData);
-
+      console.log(instance);
+      if(instance == undefined) {
+        return false;
+      }
       // Bubble resize events
-      //bubbleUp(instance, 'resize', self);
+      bubbleUp(instance, 'resize', self);
 
       // Check if instance is a task
       if (Column.isTask(instance)) {
@@ -138,7 +144,7 @@ H5P.Column = (function (EventDispatcher) {
           self.trigger('resize');
         });
       }
-
+      console.log(instance);
       // Keep track of all instances
       instances.push(instance);
       instanceContainers.push({
@@ -146,7 +152,8 @@ H5P.Column = (function (EventDispatcher) {
         container: container,
         instanceIndex: instances.length - 1,
       });
-
+      console.log(instances);
+      
       // Add to DOM wrapper
       wrapper.appendChild(container);
     };
@@ -258,9 +265,137 @@ H5P.Column = (function (EventDispatcher) {
       // Create wrapper
       wrapper = document.createElement('div');
 
+      
+      process_pagination('dir');
+      
+      
+
+      
+
+       
+      if(typeof data.parent == "undefined") {
+        H5P.JoubelUI.createButton({
+          class: "view-summary ",
+          html: 'View Summary',
+          on: {
+              click: function () {
+                H5P.jQuery('.custom-summary-section').remove();
+                H5P.jQuery('.submit-answers').remove();
+                
+                  var confirmationDialog = new H5P.ConfirmationDialog({
+                    headerText: 'Column Layout Summary',
+                    dialogText: createSummary(wrapper,tasksResultEvent),
+                    cancelText: 'Cancel',
+                    confirmText: "Submit Answers"
+                  });
+                  confirmationDialog.on('confirmed', function () {
+                    //self.removeGoal($removeContainer);
+                    // Set focus to add new goal button
+                    //self.$createGoalButton.focus();
+                    var rawwa = 0;
+                    var maxwa = 0;
+                    //console.log(tasksResultEvent);
+                    for (var m = 0; m < tasksResultEvent.length; m++) {
+                      var eventwa = tasksResultEvent[m];
+                      if(typeof eventwa != "undefined"){
+                        rawwa += eventwa.getScore();
+                        maxwa += eventwa.getMaxScore();
+                      }
+                      
+                    }
+                    if(maxwa === rawwa) {
+                      maxwa += 1;
+                    }
+                    self.triggerXAPIScored(rawwa, maxwa, 'submitted-curriki');
+                    //console.log(skipped);
+                    for(skip_rec of skipped) {
+                      //console.log('skipped');
+                      //skip_rec.triggerXAPIScored(rawwa, maxwa, 'skipped');
+                      const customProgressedEvent = skip_rec.createXAPIEventTemplate('skipped');
+            
+                      if (customProgressedEvent.data.statement.object) {
+                        //customProgressedEvent.data.statement.object.definition['name'] = {'en-US': skip_rec.contentData.metadata.title};
+                        //console.log(customProgressedEvent);
+                        //section.instance.triggerXAPIScored(0,1,customProgressedEvent);
+                        skip_rec.trigger(customProgressedEvent);
+                      }
+
+                    }
+                  });
+          
+                  confirmationDialog.appendTo(parent.document.body);
+                  confirmationDialog.show();
+                  //H5P.jQuery(window.parent).scrollTop(0); 
+                  H5P.jQuery(".h5p-confirmation-dialog-popup").css("top", "80%");
+              },
+          },
+          appendTo: document.body,
+      });
+
+
+
+            H5P.JoubelUI.createButton({
+              class: "view-summary ",
+              html: 'Show More Activities',
+              on: {
+                  click: function () {
+                    //console.log(iter);
+                    //console.log(params.content.length);
+                    instanceContainers = [];
+                    if(iter >= params.content.length) {
+                      alert('No more activites to load');
+                      return false;
+                    }
+                    console.log(instances); 
+                    
+                      //console.log(iter);
+                      console.log(params);
+                      console.log(instances);
+                      //console.log(container);
+                     
+
+                      process_pagination('asd');
+                      instanceContainers.filter(function (container) { return !container.hasAttached })
+                      .forEach(function (container) {
+                        
+                        instances[container.instanceIndex]
+                          .attach(H5P.jQuery(container.container));
+              
+                        // Remove any fullscreen buttons
+                        disableFullscreen(instances[container.instanceIndex]);
+                        
+                      }); 
+                      self.trigger('resize');
+                    
+                  },
+              },
+              appendTo: document.body,
+          });
+      }
+      
+    };
+
+    function process_pagination(from) { 
+      var counter = 0;
       // Go though all contents
-      for (var i = 0; i < params.content.length; i++) {
+      //console.log(iter);
+      if(typeof data.parent != "undefined") {
+          iter = 0;
+      }
+      if(from == "asd"){
+       //console.log(instances); return false;
+      }
+      for (var i = iter; i < params.content.length; i++) {
         var content = params.content[i];
+        //console.log(i);
+        if(counter == 2 && typeof data.parent == "undefined") {
+          //console.log('In break');
+          iter = iter+2;
+          
+         
+          break;
+        }
+        //console.log(i +" done");
 
         // In case the author has created an element without selecting any
         // library
@@ -273,11 +408,20 @@ H5P.Column = (function (EventDispatcher) {
           // Add separator between contents
           addSeparator(content.content.library.split(' ')[0], content.useSeparator);
         }
-
+        console.log(grabContentData(iter));
         // Add content
-        addRunnable(content.content, grabContentData(i));
+        addRunnable(content.content, grabContentData(iter));
+        counter++;
       }
-    };
+      if(i >= params.content.length) {
+        iter = iter+2;
+      }
+      if(counter != 2) {
+        iter = iter + counter;
+      }
+    }
+
+    
 
     /**
      * Attach the column to the given container
@@ -463,6 +607,128 @@ H5P.Column = (function (EventDispatcher) {
 
       return definition;
     };
+
+    var createSummary = function (wrapper,tasksResultEvent) {
+        
+        var table_content = '<tbody>';
+      
+        var i=0;
+        for(const inst of instances) {
+          
+          var param_content = params.content[i];
+          var content_type = param_content.content.metadata.contentType;
+          
+          if( typeof inst.getAnswerGiven == "function" && !inst.getAnswerGiven()){
+            skipped.push(inst);
+            table_content += printSkippedTr(param_content.content.metadata.title);
+            
+            i++;
+            continue;
+          }
+          
+          if(content_type == "Course Presentation" || content_type == "Interactive Video" || content_type == "Questionnaire") {
+            
+                var cpTaskDone = checkSkippedStatus(inst,content_type);
+                
+                if(!cpTaskDone) {
+                  skipped.push(inst);
+                  table_content +=printSkippedTr(param_content.content.metadata.title);
+                  i++;
+                  continue;
+                }
+          }
+
+        if(typeof inst.getScore == "undefined") {
+            var cust_score = 0;
+            var cust_max_score = 0;
+
+        }else {
+          var cust_score = inst.getScore();
+          var cust_max_score = inst.getMaxScore();
+        }
+        table_content += '<tr >';
+        table_content += '<td>'+param_content.content.metadata.title+'</td>';
+        table_content += '<td style="text-align: right !important;">'+cust_score+'/'+cust_max_score+'</td>';
+        table_content += '</tr>';
+        i++;
+      } 
+      table_content += '</tbody>';
+     
+      var summary_html = '<div class="custom-summary-section"><div class="h5p-summary-table-pages"><table class="h5p-score-table-custom" style="min-height:100px;width:100%;"><thead><tr><th>Content</th><th style="text-align: right !important;">Score/Total</th></tr></thead>'+table_content+'</table></div></div>';
+      
+      return summary_html;
+      
+      
+    };
+
+    /**
+     * To print the skipped elem tr
+     * @param {*} title 
+     */
+    function printSkippedTr(title) {
+      
+          var table_content = '<tr >';
+          table_content += '<td>'+title+'  (Skipped) </td>';
+          table_content += '<td style="text-align: right !important;">0/0</td>';
+          table_content += '</tr>';
+         return table_content;
+         
+    }
+
+
+    /**
+     * To check if the instances has been skipped or not
+     * @param {*} instances 
+     * @param {*} type 
+     */
+    function checkSkippedStatus(instances, type) {
+      if(type == "Interactive Video") {
+        for (const iv_interaction of instances.interactions) {
+          if(typeof iv_interaction.getLastXAPIVerb() != "undefined") {
+            //console.log(iv_interaction.getLastXAPIVerb());
+            return true;
+          }
+        }
+        return false;
+
+      }else if(type == "Course Presentation") {
+        //console.log(instances.slidesWithSolutions);
+        for (const slide of instances.slidesWithSolutions) {
+          if(typeof slide === "undefined" || slide == ""){
+            continue;
+          }
+          for(const item of slide) {
+            if(typeof item.getAnswerGiven === "function" && item.getAnswerGiven()){
+              
+              return true;
+            }else if(typeof item.getAnswerGiven == 'undefined'  ) {
+              var flag = 0;
+              item.interactions.forEach(function(pp,mm){ 
+                  //console.log(pp.getLastXAPIVerb());
+                  if(pp.getLastXAPIVerb() !== undefined) {
+                      flag = 1;
+                  }
+              })
+            if(flag == 0) {  
+              return true;
+            }
+
+          }
+          }
+        }
+        return false;
+      } else if(type == "Questionnaire") {
+        for (const elem of instances.state.questionnaireElements) {
+      
+          if(elem.answered){
+            //console.log(elem.answered);
+            return true;
+          }
+        
+      }
+      return false;
+      }
+    }
 
     /**
      * Get xAPI data from sub content types

@@ -297,13 +297,14 @@ H5P.Essay = function ($, Question) {
 
     this.isAnswered = false;
   };
-
+  console.log('300');
   /**
    * Get xAPI data.
    * @return {Object} xAPI statement.
    * @see contract at {@link https://h5p.org/documentation/developers/contracts#guides-header-6}
    */
   Essay.prototype.getXAPIData = function () {
+    console.log('307');
     return {
       statement: this.getXAPIAnswerEvent().data.statement
     };
@@ -581,12 +582,13 @@ H5P.Essay = function ($, Question) {
    * Get the xAPI definition for the xAPI object.
    * return {Object} XAPI definition.
    */
-  Essay.prototype.getxAPIDefinition = function () {
+  Essay.prototype.getxAPIDefinition = function () { 
     var definition = {};
     definition.name = {'en-US': 'Essay'};
     // The H5P reporting module expects the "blanks" to be added to the description
     definition.description = {'en-US': this.params.taskDescription + Essay.FILL_IN_PLACEHOLDER};
-    definition.type = 'http://id.tincanapi.com/activitytype/essay';
+    //definition.type = 'http://id.tincanapi.com/activitytype/essay';
+	definition.type = 'http://adlnet.gov/expapi/activities/cmi.interaction';
     definition.interactionType = 'long-fill-in';
     /*
      * The official xAPI documentation discourages to use a correct response
@@ -603,7 +605,13 @@ H5P.Essay = function ($, Question) {
   Essay.prototype.getXAPIAnswerEvent = function () {
     var xAPIEvent = this.createEssayXAPIEvent('answered');
 
-    xAPIEvent.setScoredResult(this.getScore(), this.getMaxScore(), this, true, this.isPassed());
+    var raw_score = this.getScore();
+    var max_score = this.getMaxScore();
+
+    if(max_score === raw_score) {
+      max_score += 1;
+    }
+    xAPIEvent.setScoredResult(raw_score, max_score, this, true, this.isPassed());
     xAPIEvent.data.statement.result.response = this.inputField.getText();
 
     return xAPIEvent;
