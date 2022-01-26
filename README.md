@@ -20,14 +20,11 @@ Following applications are the part of CurrikiStudio
 1. External Postgres (For API, For LRS)
 2. External MySQL (For Tsugi)
 
-## Searching
-
-1. Elastic Search (For API)
 
 ## Minimum Requirements
 
 1. 8GB RAM
-2. 2 VCPUs
+2. 4 VCPUs
 3. Tried on Ubuntu, Amaozon Linux, Oracle Linux. This list will grow after testing
 
 ## Pre-Requisites
@@ -40,7 +37,6 @@ Our Minimal Infrastructure is composed of 3 Linux VMs. All are running docker co
 
 **1. VM1: CurrikiStudio Application**
 **2. VM2: Databases: Postgres + MySQL**
-**3. VM3: Elastic Search**
 
 ## Structure
 
@@ -59,10 +55,6 @@ Run following commands
 	sudo mkdir -p /mnt/DBData/currikiprod1-postgresdata
 	sudo mkdir -p /mnt/DBData/pgadmin1-data
 	sudo docker-compose up -d
-
-## Deployment of VM3 (Elastic VM)
-
-Currently elastic search is manual installation so you should following internet according to your environment
 
 
 ## Deployment of VM1 
