@@ -51,7 +51,7 @@ services:
     #   dockerfile: ./Dockerfile
     #   context: ./api
     container_name: currikiprod-api
-    image: quay.io/curriki/api:stage
+    image: quay.io/curriki/api:${TAG}
     ports:
       - 9001:80
       # - 4003:4003
@@ -86,7 +86,7 @@ services:
     #   dockerfile: ./Dockerfile
     #   context: ./api
     container_name: currikiprod-cron
-    image: quay.io/curriki/cron:stage
+    image: quay.io/curriki/cron:${TAG}
     # ports:
     #   - 4003:4003
     volumes:
@@ -121,7 +121,7 @@ services:
     # build:
     #   dockerfile: ./Dockerfile
     #   context: ./client
-    image: quay.io/curriki/client:stage
+    image: quay.io/curriki/client:${TAG}
     container_name: currikiprod-client
     volumes:
       - ./client/.env.local:/app/.env.local
@@ -154,7 +154,7 @@ services:
     # build:
     #   dockerfile: ./Dockerfile
     #   context: ./clientdocs
-    image: quay.io/curriki/clientdocs:latest
+    image: quay.io/curriki/clientdocs:${TAG}
     container_name: currikiprod-clientdocs
     volumes:
       - ./clientdocs/.env.local:/app/.env.local
@@ -183,70 +183,70 @@ services:
     #   start_period: 3m
     #   retries: 3
 
-#   currikiprod-trax:
-#     build:
-#       dockerfile: ./Dockerfile
-#       context: ./trax-lrs
-#     image: quay.io/curriki/trax:latest
-#     container_name: currikiprod-trax
-#     ports:
-#       - 6900:6900
-#     volumes:
-#       - ./trax-lrs/storage:/var/www/html/storage
-#       - ./trax-lrs/.env:/var/www/html/.env
-#     restart: always
-#     deploy:
-#       replicas: 1
-#       update_config:
-#         parallelism: 2
-#         order: start-first
-#         failure_action: rollback
-#         delay: 10s
-#       rollback_config:
-#         parallelism: 0
-#         order: stop-first
-#       restart_policy:
-#         condition: any
-#         delay: 5s
-#         max_attempts: 3
-#         window: 120s
-#     healthcheck:
-#       test: sh -c "[ -f /var/www/html/health.ok ]"
-#       interval: 30s
-#       timeout: 3s
-#       start_period: 10s
-#       retries: 3
+  currikiprod-trax:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./trax-lrs
+    image: quay.io/curriki/trax:${TAG}
+    container_name: currikiprod-trax
+    ports:
+      - 6900:6900
+    volumes:
+      - ./trax-lrs/storage:/var/www/html/storage
+      - ./trax-lrs/.env:/var/www/html/.env
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: sh -c "[ -f /var/www/html/health.ok ]"
+      interval: 30s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
 
-#   currikiprod-tsugi:
-#     build:
-#       dockerfile: ./Dockerfile
-#       context: ./tsugi
-#     image: quay.io/curriki/tsugi:latest
-#     container_name: currikiprod-tsugi
-#     ports:
-#       - 6300:80
-#     volumes:
-#       - ./tsugi/config.php:/var/www/html/tsugi/config.php
-#       - ./tsugi/mod/curriki/config.php:/var/www/html/tsugi/mod/curriki/config.php
-#     restart: always
-#     deploy:
-#       replicas: 1
-#       update_config:
-#         parallelism: 2
-#         order: start-first
-#         failure_action: rollback
-#         delay: 10s
-#       rollback_config:
-#         parallelism: 0
-#         order: stop-first
-#       restart_policy:
-#         condition: any
-#         delay: 5s
-#         max_attempts: 3
-#         window: 120s
-#     healthcheck:
-#       test: sh -c "[ -f /var/www/html/tsugi/health.ok ]"
-#       interval: 30s
-#       timeout: 3s
-#       start_period: 10s
-#       retries: 3
+  currikiprod-tsugi:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./tsugi
+    image: quay.io/curriki/tsugi:${TAG}
+    container_name: currikiprod-tsugi
+    ports:
+      - 6300:80
+    volumes:
+      - ./tsugi/config.php:/var/www/html/tsugi/config.php
+      - ./tsugi/mod/curriki/config.php:/var/www/html/tsugi/mod/curriki/config.php
+    restart: always
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      rollback_config:
+        parallelism: 0
+        order: stop-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: sh -c "[ -f /var/www/html/tsugi/health.ok ]"
+      interval: 30s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
