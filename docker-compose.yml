@@ -154,7 +154,7 @@ services:
     # build:
     #   dockerfile: ./Dockerfile
     #   context: ./clientdocs
-    image: quay.io/curriki/clientdocs:${TAG}
+    image: quay.io/curriki/clientdocs:latest
     container_name: currikiprod-clientdocs
     volumes:
       - ./clientdocs/.env.local:/app/.env.local
@@ -187,7 +187,7 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: ./trax-lrs
-    image: quay.io/curriki/trax:${TAG}
+    image: quay.io/curriki/trax:latest
     container_name: currikiprod-trax
     ports:
       - 6900:6900
