@@ -16,8 +16,8 @@ services:
     depends_on:
       - currikiprod-client
       - currikiprod-api
-#       - currikiprod-trax
-#       - currikiprod-tsugi
+      - currikiprod-trax
+      - currikiprod-tsugi
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     deploy:
       replicas: 1
