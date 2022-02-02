@@ -125,6 +125,7 @@ services:
     container_name: currikiprod-client
     volumes:
       - ./client/.env.local:/app/.env.local
+      - ./client/.env:/usr/share/nginx/html/.env
     restart: always
     ports:
       - 3000:3000
