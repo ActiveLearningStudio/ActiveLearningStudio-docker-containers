@@ -75,7 +75,7 @@ services:
         max_attempts: 3
         window: 120s
     healthcheck:
-      test: sh -c "[ -f /var/www/html/health.ok ]"
+      test: sh -c "[ -f /app/health.ok ]"
       interval: 10s
       timeout: 3s
       start_period: 10s
