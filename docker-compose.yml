@@ -75,10 +75,10 @@ services:
         max_attempts: 3
         window: 120s
     healthcheck:
-      test: sh -c "[ -f /app/health.ok ]"
+      test: sh -c "[ -f /var/www/html/health.ok ]"
       interval: 10s
       timeout: 3s
-      start_period: 2m
+      start_period: 10s
       retries: 3
 
   currikiprod-cron:
@@ -112,7 +112,7 @@ services:
       test: sh -c "[ -f /var/www/html/health.ok ]"
       interval: 10s
       timeout: 3s
-      start_period: 2m
+      start_period: 10s
       retries: 3
   
 
@@ -149,7 +149,7 @@ services:
       test: sh -c "[ -f /usr/share/nginx/html/health.ok ]"
       interval: 10s
       timeout: 3s
-      start_period: 2m
+      start_period: 10s
       retries: 3
 
   currikiprod-clientdocs:
@@ -216,7 +216,7 @@ services:
       test: sh -c "[ -f /var/www/html/health.ok ]"
       interval: 10s
       timeout: 3s
-      start_period: 2m
+      start_period: 10s
       retries: 3
 
   currikiprod-tsugi:
@@ -250,5 +250,5 @@ services:
       test: sh -c "[ -f /var/www/html/tsugi/health.ok ]"
       interval: 10s
       timeout: 3s
-      start_period: 2m
+      start_period: 10s
       retries: 3
