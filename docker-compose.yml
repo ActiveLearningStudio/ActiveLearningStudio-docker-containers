@@ -124,10 +124,10 @@ services:
     container_name: currikiprod-client
     volumes:
       - ./client/.env.local:/app/.env.local
-      - ./client/.env:/usr/share/nginx/html/.env
+#       - ./client/.env:/usr/share/nginx/html/.env
     restart: always
-    env_file:
-      - .env
+#     env_file:
+#       - .env
     ports:
       - 3000:3000
     deploy:
@@ -146,10 +146,10 @@ services:
         max_attempts: 3
         window: 120s
     healthcheck:
-      test: sh -c "[ -f /usr/share/nginx/html/health.ok ]"
-      interval: 10s
+      test: sh -c "[ -f /app/health.ok ]"
+      interval: 1m
       timeout: 3s
-      start_period: 10s
+      start_period: 3m
       retries: 3
 
   currikiprod-clientdocs:
