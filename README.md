@@ -39,9 +39,24 @@ Our Minimal Infrastructure is composed of 3 Linux VMs. All are running docker co
 1. **Database VM: Postgres + MySQL**
 2. **Application VM: CurrikiStudio Application**
 
-## Structure
+Before installing the application. We need DNS entries so that Lets encrypt generate SSL
 
-![Structure](images/structure.png)
+
+### For Lets encrypt Add DNS records
+
+1. Copy public ip of the VM and put inside the DNS records like this.
+
+Say public ip of your VM is 132.226.36.47
+
+You must create these A records like
+
+    example.currikistudio.org 132.226.36.47
+	example-admin.currikistudio.org 132.226.36.47
+	example-tsugi.currikistudio.org 132.226.36.47
+	example-trax.currikistudio.org 132.226.36.47
+
+This step is necessary to generate letsencrypt certificate which will be discussed later in this section
+
 
 ## Database VM: Postgres + MySQL
 
@@ -71,20 +86,6 @@ Applications will be deployed on VM1
 > docker swarm init
 > docker stack deploy -c docker-compose.yaml currikistack
 
+Once it is done. Your application will be deployed on the DNS provided like `example.currikistudio.org`
 
 
-
-### For Lets encrypt Add DNS records
-
-1. Copy public ip of the VM and put inside the DNS records like this.
-
-Say public ip of your VM is 132.226.36.47
-
-You must create these A records like
-
-    example.currikistudio.org 132.226.36.47
-	example-admin.currikistudio.org 132.226.36.47
-	example-tsugi.currikistudio.org 132.226.36.47
-	example-trax.currikistudio.org 132.226.36.47
-
-This step is necessary to generate letsencrypt certificate which will be discussed later in this section
