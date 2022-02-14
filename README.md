@@ -34,7 +34,7 @@ Tried on Ubuntu, Amaozon Linux, Oracle Linux. This list will grow after testing
 
 # Infrastructure
 
-Our Minimal Infrastructure is composed of 3 Linux VMs. All are running docker containers inside those
+Our Minimal Infrastructure is composed of two Linux VMs. All are running docker containers inside those
 
 1. **Database VM: Postgres + MySQL**
 2. **Application VM: CurrikiStudio Application**
