@@ -75,7 +75,6 @@ Run following commands
 
 ## Application VM: CurrikiStudio Application
 
-Applications will be deployed on VM1
 
 
 1. git clone https://github.com/ActiveLearningStudio/ActiveLearningStudio-docker-containers
