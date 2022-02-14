@@ -23,9 +23,10 @@ Following applications are the part of CurrikiStudio
 
 ## Minimum Requirements
 
-1. 8GB RAM
-2. 4 VCPUs
-3. Tried on Ubuntu, Amaozon Linux, Oracle Linux. This list will grow after testing
+1. Two Linux VMs
+2. 8GB RAM 4 VCPUs
+
+Tried on Ubuntu, Amaozon Linux, Oracle Linux. This list will grow after testing
 
 ## Pre-Requisites
 
@@ -35,14 +36,14 @@ Following applications are the part of CurrikiStudio
 
 Our Minimal Infrastructure is composed of 3 Linux VMs. All are running docker containers inside those
 
-**1. VM1: CurrikiStudio Application**
-**2. VM2: Databases: Postgres + MySQL**
+**Database VM: Postgres + MySQL**
+**Application VM: CurrikiStudio Application**
 
 ## Structure
 
 ![Structure](images/structure.png)
 
-## Deployment of VM2 (Database VM)
+## Database VM: Postgres + MySQL
 
 Install [docker compose](https://docs.docker.com/compose/install/)
 
@@ -57,11 +58,10 @@ Run following commands
 	sudo docker-compose up -d
 
 
-## Deployment of VM1 
+## Application VM: CurrikiStudio Application
 
 Applications will be deployed on VM1
 
-## Installation Steps
 
 1. git clone https://github.com/ActiveLearningStudio/ActiveLearningStudio-docker-containers
 2. Create environemnt files for client / api / tsugi / trax
@@ -70,15 +70,6 @@ Applications will be deployed on VM1
 
 > docker swarm init
 > docker stack deploy -c docker-compose.yaml currikistack
-
-
-
-### For Ubuntu 
-[https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-18-04](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-18-04)
-
-### For CentOS 7
-
-[https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-centos-7](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-centos-7)
 
 
 
