@@ -50,8 +50,7 @@ Say public ip of your VM is 132.226.36.47
 
 You must create these A records like
 
-    example.currikistudio.org 132.226.36.47
-	example-admin.currikistudio.org 132.226.36.47
+    	example.currikistudio.org 132.226.36.47
 	example-tsugi.currikistudio.org 132.226.36.47
 	example-trax.currikistudio.org 132.226.36.47
 
